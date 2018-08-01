@@ -55,7 +55,7 @@ dependencies {
 sonarqube {
     properties {
         property "sonar.projectName", "library-management-system"
-        property "sonar.projectKey", "com.rapps.utility.learning.lms"
+        property "sonar.projectKey", "library-management-system"
     }
 }
 
