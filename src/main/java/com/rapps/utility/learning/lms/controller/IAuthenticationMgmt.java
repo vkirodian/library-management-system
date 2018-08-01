@@ -25,5 +25,5 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@RequestMapping(value = "login", method = RequestMethod.POST)
-	public User login(LoginInput login) throws LmsException;
+	public Usser login(LoginInput login) throws LmsException;
 }
