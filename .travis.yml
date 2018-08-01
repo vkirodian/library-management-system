@@ -5,17 +5,21 @@ install: true
 before_script:
   - chmod +x gradlew
 
+addons:
+  sonarcloud:
+    organization: "vkirodian-github"
+    token:
+      secure: "fbfd55125831f546568776d591fe569129dfabda"
+
   
 script:
   - ./gradlew sonarqube
-  -Dsonar.organization=vkirodian-github
-  -Dsonar.host.url=https://sonarcloud.io
-  -Dsonar.login=fbfd55125831f546568776d591fe569129dfabda
   
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
+    - $HOME/.sonar/cache
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
