@@ -5,11 +5,11 @@ install: true
 before_script:
   - chmod +x gradlew
 
-addons:
-  sonarqube:
-    organization: "vkirodian-github"
-    token:
-      secure: "fbfd55125831f546568776d591fe569129dfabda"
+#addons:
+#  sonarqube:
+#    organization: "vkirodian-github"
+#    token:
+#      secure: "fbfd55125831f546568776d591fe569129dfabda"
     
   
 script:
