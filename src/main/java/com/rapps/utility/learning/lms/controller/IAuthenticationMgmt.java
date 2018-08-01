@@ -16,6 +16,14 @@ import com.rapps.utility.learning.lms.persistence.bean.User;
 @RequestMapping("/lms/authentication")
 public interface IAuthenticationMgmt {
 
+	/**
+	 * API for logging into the application.
+	 * 
+	 * @param login
+	 *            Credentials
+	 * @return
+	 * @throws LmsException
+	 */
 	@RequestMapping(value = "login", method = RequestMethod.POST)
 	public User login(LoginInput login) throws LmsException;
 }
