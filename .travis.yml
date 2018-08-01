@@ -9,7 +9,7 @@ addons:
   sonarqube: true
   
 script:
-  - ./gradlew sonarqube -Dsonar.organization=vkirodian-github -Dsonar.host.url=https://sonarcloud.io L -Dsonar.login=fbfd55125831f546568776d591fe569129dfabda
+  - ./gradlew sonarqube -Dsonar.organization=vkirodian-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=fbfd55125831f546568776d591fe569129dfabda
   
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
