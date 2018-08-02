@@ -9,8 +9,14 @@ public enum MessagesEnum implements IMessages {
 	INFO("Additional information"),
 	WARNING("Warning"),
 	
-	//authentication messages
-	LOGIN_FAILED("Login failed incorrect credentials entered."),
+	//Authentication messages
+	LOGIN_FAILED("Incorrect credentials entered."),
+	PASSWORD_EXPIRED("Your password has expired, please reset it and login again"),
+	SESSION_MISSING("Session information is missing in the request or is invalid."),
+	
+	
+	//User Service
+	USER_NOT_FOUND("User not found."),
 	
 	INTERNAL_ERROR("Server error. Cause {0}"),
 	;
