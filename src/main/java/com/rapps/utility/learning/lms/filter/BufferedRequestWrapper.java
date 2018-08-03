@@ -48,7 +48,7 @@ public class BufferedRequestWrapper extends HttpServletRequestWrapper {
 		super(req);
 		InputStream is = req.getInputStream();
 		baos = new ByteArrayOutputStream();
-		byte buf[] = new byte[1024];
+		byte[] buf = new byte[1024];
 		int letti;
 		while ((letti = is.read(buf)) > 0) {
 			baos.write(buf, 0, letti);
