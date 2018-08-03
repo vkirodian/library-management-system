@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -30,9 +30,8 @@ public class Session {
 	@Column(name = "LOGGEDINTIME")
 	private long loggedInTime;
 
-	@ManyToOne(targetEntity = User.class, cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
-	@JoinColumn(name = "USERID")
-	private User user;
+	@Column(name = "USERID")
+	private String userId;
 
 	public String getSessionId() {
 		return sessionId;
@@ -66,12 +65,13 @@ public class Session {
 		this.loggedInTime = loggedInTime;
 	}
 
-	public User getUser() {
-		return user;
+
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	@Override
@@ -103,6 +103,6 @@ public class Session {
 	@Override
 	public String toString() {
 		return "Session [sessionId=" + sessionId + ", lastAccessTime=" + lastAccessTime + ", loggedInIpAddress="
-				+ loggedInIpAddress + ", loggedInTime=" + loggedInTime + ", user=" + user + "]";
+				+ loggedInIpAddress + ", loggedInTime=" + loggedInTime + ", userId=" + userId + "]";
 	}
 }

@@ -57,7 +57,6 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.PASSWORD_EXPIRED);
 		}
 		Session session = createSession(user);
-		session.getUser().setPassword(null);
 		SessionCache.addSessionToCache(session);
 		return session;
 	}
@@ -81,6 +80,11 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 		return userService.saveUser(user);
 	}
 
+	/**
+	 * Logs out current user, removes session from cache and database.
+	 * 
+	 * @throws LmsException
+	 */
 	public void logout() throws LmsException {
 		String sessionId = super.getSessionId();
 		SessionCache.removeSessionFromCache(sessionId);
@@ -93,10 +97,10 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 		session.setLastAccessTime(System.currentTimeMillis());
 		session.setLoggedInTime(System.currentTimeMillis());
 		session.setSessionId(UUID.randomUUID().toString());
-		session.setUser(user);
+		session.setUserId(user.getUserId());
 		return sessionService.saveSession(session);
 	}
-	
+
 	private void deleteSession(String sessionId) throws LmsException {
 		Session session = sessionService.getSession(sessionId);
 		sessionService.deleteSession(session);

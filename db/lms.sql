@@ -8,7 +8,7 @@ create table USER (
     PASSWORD varchar(255) not null,
     PASSWORDEXPIRYTMS bigint not null,
     EMAILID varchar(255),
-    USERROLE int(2)
+    USERROLE int(2) not null
 );
 
 insert into USER (USERID, LOGINID, PASSWORD, PASSWORDEXPIRYTMS, EMAILID, USERROLE) 

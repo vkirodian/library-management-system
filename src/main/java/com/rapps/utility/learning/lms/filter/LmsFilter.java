@@ -40,6 +40,8 @@ public class LmsFilter implements Filter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LmsFilter.class);
 
+	private static String jsonPattern = "(?i)(password:)(.+?)(\")";
+
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 	}
@@ -60,8 +62,9 @@ public class LmsFilter implements Filter {
 
 		JsonResponseWrapper jsonResponseWrapper = new JsonResponseWrapper((HttpServletResponse) response);
 		chain.doFilter(bufferedRequest, jsonResponseWrapper);
+		String maskedResponse = maskPassword(jsonResponseWrapper.getResponseAsString());
 		response.getOutputStream()
-				.write(getBytes(getResponseStatus(getJsonNode(jsonResponseWrapper.getResponseAsString()))));
+				.write(getBytes(getResponseStatus(getJsonNode(maskedResponse))));
 	}
 
 	@Override
@@ -69,7 +72,7 @@ public class LmsFilter implements Filter {
 	}
 
 	private void verifySession(HttpServletRequest httpRequest) throws IOException {
-		String sessionId = httpRequest.getHeader("sessionId");
+		String sessionId = httpRequest.getHeader(LmsConstants.SESSION_ID);
 		if (sessionId == null) {
 			LOG.error("Session information missing in request");
 			throw new IOException(MessagesEnum.SESSION_MISSING.getMessage());
@@ -112,5 +115,9 @@ public class LmsFilter implements Filter {
 		String serialized = new ObjectMapper().writeValueAsString(response);
 		LOG.debug("Response : {}", serialized);
 		return serialized.getBytes();
+	}
+	
+	private String maskPassword(String jsonResponse) {
+		return jsonResponse.replaceAll(jsonPattern, "$1" + "\"****" + "$3");
 	}
 }
