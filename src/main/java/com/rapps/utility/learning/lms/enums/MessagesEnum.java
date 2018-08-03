@@ -18,7 +18,6 @@ public enum MessagesEnum implements IMessages {
 	//Authentication messages
 	LOGIN_FAILED("Incorrect credentials entered."),
 	PASSWORD_EXPIRED("Your password has expired, please reset it and login again"),
-	SESSION_MISSING("Session information is missing in the request or is invalid."),
 	OLD_NEW_PASWORD_SAME("Old and New password cannot be same."),
 	PASSWORD_NULL_EMPTY("Password cannot be empty"),
 	PASSWORD_USERNAME_SAME("Password cannot be same as Login ID."),
@@ -30,6 +29,9 @@ public enum MessagesEnum implements IMessages {
 	
 	//Session Service
 	SESSION_NOT_FOUND("Session not found."),
+	SESSION_MISSING("Session information is missing in the request or is invalid."),
+	SESSION_EXPIRED("User session expired."),
+
 	
 	//
 	INTERNAL_ERROR("Server error. Cause {0}"),

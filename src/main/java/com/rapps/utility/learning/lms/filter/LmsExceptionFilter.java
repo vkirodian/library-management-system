@@ -1,5 +1,7 @@
 package com.rapps.utility.learning.lms.filter;
 
+import java.io.IOException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,16 @@ public class LmsExceptionFilter extends ResponseEntityExceptionHandler {
 		errorStatus.setErrorReasonCode(ex.getErrorReasonCode());
 		errorStatus.setErrorType(ex.getErrorType());
 		return buildResponseEntity(errorStatus);
+	}
+
+	@ExceptionHandler(IOException.class)
+	protected ResponseEntity<Object> handleIoException(LmsException ex) {
+		OutputStatus errorStatus = new OutputStatus();
+		errorStatus.setErrorMsg(ex.getErrorMessage());
+		errorStatus.setErrorReason(ex.getErrorReason());
+		errorStatus.setErrorReasonCode(ex.getErrorReasonCode());
+		errorStatus.setErrorType(ex.getErrorType());
+		return new ResponseEntity<>(errorStatus, HttpStatus.UNAUTHORIZED);
 	}
 
 	@Override

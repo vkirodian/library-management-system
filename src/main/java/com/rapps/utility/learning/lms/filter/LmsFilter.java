@@ -15,15 +15,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rapps.utility.learning.lms.enums.ApiAuthorizationEnum;
 import com.rapps.utility.learning.lms.enums.MessagesEnum;
+import com.rapps.utility.learning.lms.enums.UserRole;
+import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
 import com.rapps.utility.learning.lms.global.LmsConstants;
 import com.rapps.utility.learning.lms.global.SessionCache;
+import com.rapps.utility.learning.lms.helper.SessionMgmtHelper;
 import com.rapps.utility.learning.lms.model.GenericOutput;
 import com.rapps.utility.learning.lms.model.OutputStatus;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
@@ -46,6 +51,9 @@ public class LmsFilter implements Filter {
 
 	private static String jsonPattern = "(?i)(\"password\":)(.+?)(\")";
 
+	@Autowired
+	SessionMgmtHelper sessionMgmtHelper;
+
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 	}
@@ -63,7 +71,7 @@ public class LmsFilter implements Filter {
 		}
 
 		if (!URL_SKIP_SESSION_VERIFICATION.contains(bufferedRequest.getRequestURI())) {
-			verifySession(bufferedRequest);
+			verifySessionAndAuthorize(bufferedRequest);
 		}
 
 		JsonResponseWrapper jsonResponseWrapper = new JsonResponseWrapper((HttpServletResponse) response);
@@ -76,7 +84,7 @@ public class LmsFilter implements Filter {
 	public void destroy() {
 	}
 
-	private void verifySession(HttpServletRequest httpRequest) throws IOException {
+	private void verifySessionAndAuthorize(HttpServletRequest httpRequest) throws IOException {
 		String sessionId = httpRequest.getHeader(LmsConstants.SESSION_ID);
 		if (sessionId == null) {
 			LOG.error("Session information missing in request");
@@ -87,7 +95,18 @@ public class LmsFilter implements Filter {
 				LOG.error("Invalid session in request");
 				throw new IOException(MessagesEnum.SESSION_MISSING.getMessage());
 			}
-			// TODO Authorization
+			try {
+				UserRole userRole = sessionMgmtHelper.getRoleForUserSession(sessionId);
+				boolean isAuthorized = ApiAuthorizationEnum.doesRoleExistForApi(httpRequest.getRequestURI(), userRole);
+				if (!isAuthorized) {
+					LOG.error("User role {} is unauthorized to invoke API {}", userRole, httpRequest.getRequestURI());
+					throw new IOException("Unauthorized");
+				}
+				sessionMgmtHelper.updateLastAccessTime(sessionId);
+			} catch (LmsException e) {
+				LOG.error("Unable to get User Role.");
+				throw new IOException(e.getErrorReason());
+			}
 		}
 	}
 
