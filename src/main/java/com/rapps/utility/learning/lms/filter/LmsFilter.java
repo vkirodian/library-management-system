@@ -98,9 +98,14 @@ public class LmsFilter implements Filter {
 			try {
 				UserRole userRole = sessionMgmtHelper.getRoleForUserSession(sessionId);
 				boolean isAuthorized = ApiAuthorizationEnum.doesRoleExistForApi(httpRequest.getRequestURI(), userRole);
+				if (!isAuthorized) {
+					LOG.error("User role {} is unauthorized to invoke API {}", userRole, httpRequest.getRequestURI());
+					throw new IOException("Unauthorized");
+				}
+				sessionMgmtHelper.updateLastAccessTime(sessionId);
 			} catch (LmsException e) {
 				LOG.error("Unable to get User Role.");
-				throw new IOException("Unable to get user role because " + e.getErrorReason());
+				throw new IOException(e.getErrorReason());
 			}
 		}
 	}

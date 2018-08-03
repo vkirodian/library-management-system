@@ -7,6 +7,13 @@ import java.util.Map;
 
 import org.springframework.util.CollectionUtils;
 
+/**
+ * Enum containing mapping between API and the roles for which those API are
+ * allowed.
+ * 
+ * @author vkirodian
+ *
+ */
 public enum ApiAuthorizationEnum {
 
 	LOGOUT("/lms/authentication/logout", Arrays.asList(UserRole.SUPER_ADMIN, UserRole.LIBRARIAN, UserRole.USERS)),
@@ -24,6 +31,13 @@ public enum ApiAuthorizationEnum {
 
 	private static final Map<String, List<UserRole>> apiRoleMap = new HashMap<>();
 
+	/**
+	 * Gives the list of user role allowed for this API.
+	 * 
+	 * @param api
+	 *            API
+	 * @return List of allowed user roles
+	 */
 	public static List<UserRole> getRolesForApi(String api) {
 		if (apiRoleMap.isEmpty()) {
 			for (ApiAuthorizationEnum e : ApiAuthorizationEnum.values()) {
@@ -33,6 +47,15 @@ public enum ApiAuthorizationEnum {
 		return apiRoleMap.get(api);
 	}
 
+	/**
+	 * Returns if the given API is allowed for the given User role.
+	 * 
+	 * @param api
+	 *            API
+	 * @param role
+	 *            User role
+	 * @return true if user role can access this API.
+	 */
 	public static boolean doesRoleExistForApi(String api, UserRole role) {
 		boolean result = false;
 		List<UserRole> rolesForApi = getRolesForApi(api);
