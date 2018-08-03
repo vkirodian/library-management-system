@@ -9,6 +9,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * @author vkirodia
+ *
+ */
 @Entity
 @Table(name = "session")
 public class Session {
@@ -71,12 +75,6 @@ public class Session {
 	}
 
 	@Override
-	public String toString() {
-		return "Session [sessionId=" + sessionId + ", lastAccessTime=" + lastAccessTime + ", loggedInIpAddress="
-				+ loggedInIpAddress + ", loggedInTime=" + loggedInTime + ", user=" + user + "]";
-	}
-
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -96,9 +94,15 @@ public class Session {
 		if (sessionId == null) {
 			if (other.sessionId != null)
 				return false;
-		} else if (!sessionId.equals(other.sessionId))
+		} else if (!sessionId.equals(other.sessionId)) {
 			return false;
+		}
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Session [sessionId=" + sessionId + ", lastAccessTime=" + lastAccessTime + ", loggedInIpAddress="
+				+ loggedInIpAddress + ", loggedInTime=" + loggedInTime + ", user=" + user + "]";
+	}
 }

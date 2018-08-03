@@ -5,7 +5,7 @@ import com.rapps.utility.learning.lms.persistence.bean.Session;
 /**
  * Session repository.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 public interface SessionRepository extends BaseRepository<Session> {

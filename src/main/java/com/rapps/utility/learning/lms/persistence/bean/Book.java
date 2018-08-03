@@ -87,4 +87,9 @@ public class Book {
 		this.language = language;
 	}
 
+	@Override
+	public String toString() {
+		return "Book [bookId=" + bookId + ", title=" + title + ", author=" + author + ", description=" + description
+				+ ", edition=" + edition + ", category=" + category + ", language=" + language + "]";
+	}
 }

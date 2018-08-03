@@ -22,11 +22,11 @@ import com.rapps.utility.learning.lms.persistence.service.UserService;
 /**
  * Helper for Authentication Management class.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 @Component
-public class AuthenticationMgmtHelper {
+public class AuthenticationMgmtHelper extends BaseHelper {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AuthenticationMgmtHelper.class);
 
@@ -81,14 +81,25 @@ public class AuthenticationMgmtHelper {
 		return userService.saveUser(user);
 	}
 
+	public void logout() throws LmsException {
+		String sessionId = super.getSessionId();
+		SessionCache.removeSessionFromCache(sessionId);
+		deleteSession(sessionId);
+	}
+
 	private Session createSession(User user) {
 		Session session = new Session();
 		session.setLoggedInIpAddress("10.1.1.1");// TODO
 		session.setLastAccessTime(System.currentTimeMillis());
-		session.setLastAccessTime(System.currentTimeMillis());
+		session.setLoggedInTime(System.currentTimeMillis());
 		session.setSessionId(UUID.randomUUID().toString());
 		session.setUser(user);
 		return sessionService.saveSession(session);
+	}
+	
+	private void deleteSession(String sessionId) throws LmsException {
+		Session session = sessionService.getSession(sessionId);
+		sessionService.deleteSession(session);
 	}
 
 	private void validatePasswordStrength(String password) {

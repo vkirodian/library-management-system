@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * Provides a way to convert original HTTP request input stream into a string
  * stream.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 public class JsonResponseWrapper extends HttpServletResponseWrapper {

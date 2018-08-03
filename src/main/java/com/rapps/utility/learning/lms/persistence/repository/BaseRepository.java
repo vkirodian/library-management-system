@@ -7,7 +7,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * A Base repository extending {@link CrudRepository} where the ID is set as
  * String.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  * @param <T>
  *            Type of bean for which the repository has been made.

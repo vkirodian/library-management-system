@@ -32,7 +32,7 @@ import com.rapps.utility.learning.lms.persistence.bean.Session;
  * Authorize the API against the session information.<br>
  * Wrap the response in {@link ResponseStatusModel} class.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 @Component
@@ -69,16 +69,17 @@ public class LmsFilter implements Filter {
 	}
 
 	private void verifySession(HttpServletRequest httpRequest) throws IOException {
-		if (httpRequest.getHeader("sessionId") == null) {
+		String sessionId = httpRequest.getHeader("sessionId");
+		if (sessionId == null) {
 			LOG.error("Session information missing in request");
 			throw new IOException(MessagesEnum.SESSION_MISSING.getMessage());
 		} else {
-			String sessionId = httpRequest.getHeader("sessionId");
 			Session session = SessionCache.sessionExists(sessionId);
 			if(session == null) {
 				LOG.error("Invalid session in request");
 				throw new IOException(MessagesEnum.SESSION_MISSING.getMessage());
 			}
+			//TODO Authorization
 		}
 	}
 

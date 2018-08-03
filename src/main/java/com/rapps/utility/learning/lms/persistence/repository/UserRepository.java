@@ -5,7 +5,7 @@ import com.rapps.utility.learning.lms.persistence.bean.User;
 /**
  * User Repository.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 public interface UserRepository extends BaseRepository<User> {

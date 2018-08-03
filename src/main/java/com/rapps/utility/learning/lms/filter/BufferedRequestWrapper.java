@@ -13,14 +13,19 @@ import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Provides a way to convert original HTTP request input stream into a buffered
  * stream.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 public class BufferedRequestWrapper extends HttpServletRequestWrapper {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(BufferedRequestWrapper.class);
 
 	ByteArrayInputStream bais;
 
@@ -56,7 +61,7 @@ public class BufferedRequestWrapper extends HttpServletRequestWrapper {
 			bais = new ByteArrayInputStream(buffer);
 			bsis = new BufferedServletInputStream(bais);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.error("Error in getting input stream", ex);
 		}
 
 		return bsis;
@@ -74,6 +79,7 @@ public class BufferedRequestWrapper extends HttpServletRequestWrapper {
 			this.bais = bais;
 		}
 
+		@Override
 		public int available() {
 			return bais.available();
 		}
@@ -82,6 +88,7 @@ public class BufferedRequestWrapper extends HttpServletRequestWrapper {
 			return bais.read();
 		}
 
+		@Override
 		public int read(byte[] buf, int off, int len) {
 			return bais.read(buf, off, len);
 		}

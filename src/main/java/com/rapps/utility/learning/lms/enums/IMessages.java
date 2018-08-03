@@ -3,7 +3,7 @@ package com.rapps.utility.learning.lms.enums;
 /**
  * Interface for all UI related messages in LMS.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 public interface IMessages {

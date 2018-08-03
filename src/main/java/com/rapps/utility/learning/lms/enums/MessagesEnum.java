@@ -1,5 +1,11 @@
 package com.rapps.utility.learning.lms.enums;
 
+/**
+ * Messages to be sent out to UI.
+ * 
+ * @author vkirodian
+ *
+ */
 public enum MessagesEnum implements IMessages {
 	
 	GLOBAL_FAILURE("System error"),
@@ -18,6 +24,10 @@ public enum MessagesEnum implements IMessages {
 	//User Service
 	USER_NOT_FOUND("User not found."),
 	
+	//Session Service
+	SESSION_NOT_FOUND("Session not found."),
+	
+	//
 	INTERNAL_ERROR("Server error. Cause {0}"),
 	;
 

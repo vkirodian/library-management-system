@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Access point for spring boot to start execution of the program.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 @SpringBootApplication

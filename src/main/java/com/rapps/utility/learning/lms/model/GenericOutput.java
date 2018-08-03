@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 /**
  * Class holding the generic output that the application sends out.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)

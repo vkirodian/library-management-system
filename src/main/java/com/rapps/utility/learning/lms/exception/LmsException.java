@@ -8,7 +8,7 @@ import com.rapps.utility.learning.lms.enums.MessagesEnum;
 /**
  * Custom exception class for LMS.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 @SuppressWarnings("serial")

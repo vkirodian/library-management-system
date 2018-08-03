@@ -20,7 +20,7 @@ import ch.qos.logback.core.status.ErrorStatus;
  * through @ExceptionHandler methods. It wraps the {@link LmsException} thrown
  * be underlying controller to {@link ErrorStatus}
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 @ControllerAdvice

@@ -1,5 +1,6 @@
 package com.rapps.utility.learning.lms.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -11,7 +12,7 @@ import com.rapps.utility.learning.lms.persistence.bean.Session;
 /**
  * Interface providing API' related to authentication service.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 @RequestMapping("/lms/authentication")
@@ -36,4 +37,12 @@ public interface IAuthenticationMgmt {
 	 */
 	@PostMapping(value = "resetPassword")
 	public void resetPassword(ResetPassword resetPassword) throws LmsException;
+
+	/**
+	 * Logs out current user.
+	 * 
+	 * @throws LmsException
+	 */
+	@GetMapping(value = "logout")
+	public void logout() throws LmsException;
 }

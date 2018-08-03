@@ -7,6 +7,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.rapps.utility.learning.lms.enums.UserRole;
 
 @Entity
 @Table(name = "user")
@@ -28,6 +29,9 @@ public class User {
 
 	@Column(name = "EMAILID")
 	private String emailId;
+
+	@Column(name = "USERROLE")
+	private UserRole userRole;
 
 	public String getUserId() {
 		return userId;
@@ -69,9 +73,18 @@ public class User {
 		this.emailId = emailId;
 	}
 
+	public UserRole getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(UserRole userRole) {
+		this.userRole = userRole;
+	}
+
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", loginId=" + loginId + ", password=" + password + ", passwordExpiryTms="
-				+ passwordExpiryTms + ", emailId=" + emailId + "]";
+		return "User [userId=" + userId + ", loginId=" + loginId + ", passwordExpiryTms=" + passwordExpiryTms
+				+ ", emailId=" + emailId + ", userRole=" + userRole + "]";
 	}
+
 }

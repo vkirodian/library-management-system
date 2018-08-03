@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Class containing all application constants.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 public class LmsConstants {

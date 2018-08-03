@@ -6,7 +6,7 @@ import com.rapps.utility.learning.lms.exception.LmsException;
 /**
  * Class holding the status of the output.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)

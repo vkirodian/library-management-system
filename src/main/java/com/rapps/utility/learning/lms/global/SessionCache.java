@@ -1,7 +1,6 @@
 package com.rapps.utility.learning.lms.global;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.rapps.utility.learning.lms.persistence.bean.Session;
@@ -9,7 +8,7 @@ import com.rapps.utility.learning.lms.persistence.bean.Session;
 /**
  * A cache for active sessions.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 public final class SessionCache {
@@ -48,6 +47,17 @@ public final class SessionCache {
 	 */
 	public static Session addSessionToCache(Session session) {
 		return SESSION_CACHE.put(session.getSessionId(), session);
+	}
+
+	/**
+	 * Remove the session associated with session id from cache.
+	 * 
+	 * @param sessionId
+	 *            Session Id
+	 * @return Removed Session
+	 */
+	public static Session removeSessionFromCache(String sessionId) {
+		return SESSION_CACHE.remove(sessionId);
 	}
 
 }

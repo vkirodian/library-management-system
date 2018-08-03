@@ -5,7 +5,7 @@ import com.rapps.utility.learning.lms.persistence.bean.Book;
 /**
  * Book repository.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 public interface BookRepository extends BaseRepository<Book> {
