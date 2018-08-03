@@ -1,6 +1,8 @@
 package com.rapps.utility.learning.lms.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -39,6 +41,8 @@ import com.rapps.utility.learning.lms.persistence.bean.Session;
 public class LmsFilter implements Filter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LmsFilter.class);
+	private static final List<String> URL_SKIP_SESSION_VERIFICATION = Arrays.asList("/lms/authentication/login",
+			"/lms/authentication/resetPassword");
 
 	private static String jsonPattern = "(?i)(password:)(.+?)(\")";
 
@@ -54,17 +58,18 @@ public class LmsFilter implements Filter {
 		BufferedRequestWrapper bufferedRequest = new BufferedRequestWrapper(httpRequest);
 		LOG.debug("{} {}", bufferedRequest.getMethod(), bufferedRequest.getRequestURI());
 		LOG.debug("Query Param : {}", bufferedRequest.getQueryString());
-		LOG.debug("Post Body : {}", new String(bufferedRequest.getBuffer()));
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Post Body : \n{}", new String(bufferedRequest.getBuffer()));
+		}
 
-		if (!LmsConstants.URL_SKIP_SESSION_VERIFICATION.contains(bufferedRequest.getRequestURI())) {
+		if (!URL_SKIP_SESSION_VERIFICATION.contains(bufferedRequest.getRequestURI())) {
 			verifySession(bufferedRequest);
 		}
 
 		JsonResponseWrapper jsonResponseWrapper = new JsonResponseWrapper((HttpServletResponse) response);
 		chain.doFilter(bufferedRequest, jsonResponseWrapper);
 		String maskedResponse = maskPassword(jsonResponseWrapper.getResponseAsString());
-		response.getOutputStream()
-				.write(getBytes(getResponseStatus(getJsonNode(maskedResponse))));
+		response.getOutputStream().write(getBytes(getResponseStatus(getJsonNode(maskedResponse))));
 	}
 
 	@Override
@@ -78,11 +83,11 @@ public class LmsFilter implements Filter {
 			throw new IOException(MessagesEnum.SESSION_MISSING.getMessage());
 		} else {
 			Session session = SessionCache.sessionExists(sessionId);
-			if(session == null) {
+			if (session == null) {
 				LOG.error("Invalid session in request");
 				throw new IOException(MessagesEnum.SESSION_MISSING.getMessage());
 			}
-			//TODO Authorization
+			// TODO Authorization
 		}
 	}
 
@@ -116,7 +121,7 @@ public class LmsFilter implements Filter {
 		LOG.debug("Response : {}", serialized);
 		return serialized.getBytes();
 	}
-	
+
 	private String maskPassword(String jsonResponse) {
 		return jsonResponse.replaceAll(jsonPattern, "$1" + "\"****" + "$3");
 	}

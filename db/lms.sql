@@ -5,7 +5,7 @@ use lms;
 create table USER (
 	USERID varchar(36) primary key,
     LOGINID varchar(10) not null unique,
-    PASSWORD varchar(255) not null,
+    PASSWORD varchar(25) not null,
     PASSWORDEXPIRYTMS bigint not null,
     EMAILID varchar(255),
     USERROLE int(2) not null

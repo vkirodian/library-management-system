@@ -28,6 +28,12 @@ import com.rapps.utility.learning.lms.persistence.service.UserService;
 @Component
 public class AuthenticationMgmtHelper extends BaseHelper {
 
+	private static final int MAX_PASSWORD_LENGTH = 25;
+	private static final int MIN_PASSWORD_LENGTH = 8;
+	private static final String SPECIAL_CHARS = "@#$%^&+=";
+	private static final String PASS_REQUIRED_CHARS_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[" + SPECIAL_CHARS
+			+ "])(?=\\S+$).{0,}$";
+
 	private static final Logger LOG = LoggerFactory.getLogger(AuthenticationMgmtHelper.class);
 
 	@Autowired
@@ -74,7 +80,7 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 			LOG.error("Incorrect credentials entered");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.LOGIN_FAILED);
 		}
-		validatePasswordStrength(resetPassword.getNewPassword());
+		validatePasswordStrength(user.getLoginId(), resetPassword.getOldPassword(), resetPassword.getNewPassword());
 		user.setPassword(resetPassword.getNewPassword());
 		user.setPasswordExpiryTms(System.currentTimeMillis() + LmsConstants.PASSWORD_EXPIRY_TIME);
 		return userService.saveUser(user);
@@ -106,6 +112,22 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 		sessionService.deleteSession(session);
 	}
 
-	private void validatePasswordStrength(String password) {
+	private void validatePasswordStrength(String loginId, String oldPassword, String newPassword) throws LmsException {
+		if (oldPassword.equals(newPassword)) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.OLD_NEW_PASWORD_SAME);
+		}
+		if (newPassword == null || newPassword.trim().isEmpty()) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.PASSWORD_NULL_EMPTY);
+		}
+		if (loginId.equals(newPassword)) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.PASSWORD_USERNAME_SAME);
+		}
+		if (newPassword.length() < MIN_PASSWORD_LENGTH || newPassword.length() > MAX_PASSWORD_LENGTH) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.PASSWORD_LENGTH_ERROR, MIN_PASSWORD_LENGTH,
+					MAX_PASSWORD_LENGTH);
+		}
+		if (!newPassword.matches(PASS_REQUIRED_CHARS_REGEX)) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.PASSWORD_CHARS_ERROR, SPECIAL_CHARS);
+		}
 	}
 }
