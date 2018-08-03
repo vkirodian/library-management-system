@@ -25,7 +25,7 @@ public class BaseHelper {
 	HttpServletRequest httpRequest;
 
 	/**
-	 * Returns current users session Id.
+	 * Returns current users session Id from request header.
 	 * 
 	 * @return Session Id
 	 * @throws LmsException
