@@ -5,8 +5,13 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.rapps.utility.learning.lms.enums.UserRole;
+
 @Entity
 @Table(name = "user")
+@JsonInclude(Include.NON_NULL)
 public class User {
 
 	@Id
@@ -19,8 +24,14 @@ public class User {
 	@Column(name = "PASSWORD")
 	private String password;
 
+	@Column(name = "PASSWORDEXPIRYTMS")
+	private long passwordExpiryTms;
+
 	@Column(name = "EMAILID")
 	private String emailId;
+
+	@Column(name = "USERROLE")
+	private UserRole userRole;
 
 	public String getUserId() {
 		return userId;
@@ -46,6 +57,14 @@ public class User {
 		this.password = password;
 	}
 
+	public long getPasswordExpiryTms() {
+		return passwordExpiryTms;
+	}
+
+	public void setPasswordExpiryTms(long passwordExpiryTms) {
+		this.passwordExpiryTms = passwordExpiryTms;
+	}
+
 	public String getEmailId() {
 		return emailId;
 	}
@@ -54,10 +73,18 @@ public class User {
 		this.emailId = emailId;
 	}
 
+	public UserRole getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(UserRole userRole) {
+		this.userRole = userRole;
+	}
+
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", loginId=" + loginId + ", password=" + password + ", emailId=" + emailId
-				+ "]";
+		return "User [userId=" + userId + ", loginId=" + loginId + ", passwordExpiryTms=" + passwordExpiryTms
+				+ ", emailId=" + emailId + ", userRole=" + userRole + "]";
 	}
 
 }

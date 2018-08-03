@@ -1,5 +1,11 @@
 package com.rapps.utility.learning.lms.enums;
 
+/**
+ * Messages to be sent out to UI.
+ * 
+ * @author vkirodian
+ *
+ */
 public enum MessagesEnum implements IMessages {
 	
 	GLOBAL_FAILURE("System error"),
@@ -9,9 +15,23 @@ public enum MessagesEnum implements IMessages {
 	INFO("Additional information"),
 	WARNING("Warning"),
 	
-	//authentication messages
-	LOGIN_FAILED("Login failed incorrect credentials entered."),
+	//Authentication messages
+	LOGIN_FAILED("Incorrect credentials entered."),
+	PASSWORD_EXPIRED("Your password has expired, please reset it and login again"),
+	SESSION_MISSING("Session information is missing in the request or is invalid."),
+	OLD_NEW_PASWORD_SAME("Old and New password cannot be same."),
+	PASSWORD_NULL_EMPTY("Password cannot be empty"),
+	PASSWORD_USERNAME_SAME("Password cannot be same as Login ID."),
+	PASSWORD_LENGTH_ERROR("Password should be minimum {0} character and maximum {1} characters long."),
+	PASSWORD_CHARS_ERROR("Password must contain atleast one character in big and small case, a number and a special character {0}"),
 	
+	//User Service
+	USER_NOT_FOUND("User not found."),
+	
+	//Session Service
+	SESSION_NOT_FOUND("Session not found."),
+	
+	//
 	INTERNAL_ERROR("Server error. Cause {0}"),
 	;
 

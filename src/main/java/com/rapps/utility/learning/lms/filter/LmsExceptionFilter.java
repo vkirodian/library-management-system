@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.rapps.utility.learning.lms.enums.MessagesEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
-import com.rapps.utility.learning.lms.model.GenericOutput;
+import com.rapps.utility.learning.lms.model.OutputStatus;
 
 import ch.qos.logback.core.status.ErrorStatus;
 
@@ -20,7 +20,7 @@ import ch.qos.logback.core.status.ErrorStatus;
  * through @ExceptionHandler methods. It wraps the {@link LmsException} thrown
  * be underlying controller to {@link ErrorStatus}
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 @ControllerAdvice
@@ -28,7 +28,7 @@ public class LmsExceptionFilter extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(LmsException.class)
 	protected ResponseEntity<Object> handleLmsException(LmsException ex) {
-		GenericOutput errorStatus = new GenericOutput();
+		OutputStatus errorStatus = new OutputStatus();
 		errorStatus.setErrorMsg(ex.getErrorMessage());
 		errorStatus.setErrorReason(ex.getErrorReason());
 		errorStatus.setErrorReasonCode(ex.getErrorReasonCode());
@@ -39,7 +39,7 @@ public class LmsExceptionFilter extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		GenericOutput errorStatus = new GenericOutput();
+		OutputStatus errorStatus = new OutputStatus();
 		errorStatus.setErrorMsg("HTTP message not readable");
 		errorStatus.setErrorReason(ex.getMessage());
 		errorStatus.setErrorReasonCode(MessagesEnum.INTERNAL_ERROR.name());
@@ -47,7 +47,7 @@ public class LmsExceptionFilter extends ResponseEntityExceptionHandler {
 		return buildResponseEntity(errorStatus);
 	}
 
-	private ResponseEntity<Object> buildResponseEntity(GenericOutput error) {
+	private ResponseEntity<Object> buildResponseEntity(OutputStatus error) {
 		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

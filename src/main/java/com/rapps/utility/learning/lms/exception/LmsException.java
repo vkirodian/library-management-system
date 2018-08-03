@@ -8,7 +8,7 @@ import com.rapps.utility.learning.lms.enums.MessagesEnum;
 /**
  * Custom exception class for LMS.
  * 
- * @author vkirodia
+ * @author vkirodian
  *
  */
 @SuppressWarnings("serial")
@@ -68,7 +68,7 @@ public class LmsException extends Exception {
 		return errorMessage;
 	}
 
-	public static enum ErrorType {
+	public enum ErrorType {
 		GLOBAL_FAILURE(-3), PARTIAL_FAILURE(-2), FAILURE(-1), SUCCESS(0), INFO(1), WARNING(2);
 
 		private ErrorType(int code) {

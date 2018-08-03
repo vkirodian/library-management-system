@@ -11,7 +11,7 @@ public class Book {
 
 	@Id
 	@Column(name = "BOOKID")
-	private String bookid;
+	private String bookId;
 
 	@Column(name = "TITLE")
 	private String title;
@@ -31,12 +31,12 @@ public class Book {
 	@Column(name = "LANGUAGE")
 	private String language;
 
-	public String getBookid() {
-		return bookid;
+	public String getBookId() {
+		return bookId;
 	}
 
-	public void setBookid(String bookid) {
-		this.bookid = bookid;
+	public void setBookId(String bookId) {
+		this.bookId = bookId;
 	}
 
 	public String getTitle() {
@@ -89,10 +89,7 @@ public class Book {
 
 	@Override
 	public String toString() {
-		return "Book [bookid=" + bookid + ", title=" + title + ", author=" + author + ", description=" + description
+		return "Book [bookId=" + bookId + ", title=" + title + ", author=" + author + ", description=" + description
 				+ ", edition=" + edition + ", category=" + category + ", language=" + language + "]";
 	}
-
-	
-	
 }
