@@ -44,7 +44,7 @@ public class LmsFilter implements Filter {
 	private static final List<String> URL_SKIP_SESSION_VERIFICATION = Arrays.asList("/lms/authentication/login",
 			"/lms/authentication/resetPassword");
 
-	private static String jsonPattern = "(?i)(password:)(.+?)(\")";
+	private static String jsonPattern = "(?i)(\"password\":)(.+?)(\")";
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
