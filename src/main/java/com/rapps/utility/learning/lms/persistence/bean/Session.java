@@ -96,9 +96,4 @@ public class Session {
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return "Session [sessionId=" + sessionId + ", lastAccessTime=" + lastAccessTime + ", loggedInIpAddress="
-				+ loggedInIpAddress + ", loggedInTime=" + loggedInTime + ", userId=" + userId + "]";
-	}
 }
