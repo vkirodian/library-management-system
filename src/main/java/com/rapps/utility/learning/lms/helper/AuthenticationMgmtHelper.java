@@ -99,7 +99,7 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 
 	private Session createSession(User user) {
 		Session session = new Session();
-		session.setLoggedInIpAddress("10.1.1.1");// TODO
+		session.setLoggedInIpAddress(super.getRemoteAddress());
 		session.setLastAccessTime(System.currentTimeMillis());
 		session.setLoggedInTime(System.currentTimeMillis());
 		session.setSessionId(UUID.randomUUID().toString());

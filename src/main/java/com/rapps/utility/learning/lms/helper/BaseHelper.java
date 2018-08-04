@@ -38,4 +38,13 @@ public class BaseHelper {
 		}
 		return sessionId;
 	}
+
+	/**
+	 * Returns the IP Address of the client from which user is logged in.
+	 * 
+	 * @return IP Address
+	 */
+	protected String getRemoteAddress() {
+		return httpRequest.getRemoteAddr();
+	}
 }

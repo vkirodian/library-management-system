@@ -62,4 +62,11 @@ public class SessionMgmtHelper {
 		session.setLastAccessTime(System.currentTimeMillis());
 		sessionService.saveSession(session);
 	}
+
+	/**
+	 * Clean all stale sessions in database on application startup.
+	 */
+	public void cleanSessionOnStartup() {
+		sessionService.deleteAllSessions();
+	}
 }

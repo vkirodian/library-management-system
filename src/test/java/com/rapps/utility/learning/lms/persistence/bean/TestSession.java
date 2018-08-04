@@ -19,6 +19,8 @@ public class TestSession extends TestCase {
 		s1b.setSessionId(null);
 		assertTrue("Session Equals failed", !s1a.equals(s1b));
 		assertTrue("Session Equals failed", !s1b.equals(s1a));
+		s1a.setSessionId(null);
+		assertTrue("Session Equals failed", s1a.equals(s1b));
 	}
 
 	private static Session getS1Session() {
