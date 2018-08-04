@@ -60,4 +60,11 @@ public final class SessionCache {
 		return SESSION_CACHE.remove(sessionId);
 	}
 
+	/**
+	 * Removes all the sessions from the cache.
+	 */
+	public static void removeAllSessions() {
+		SESSION_CACHE.clear();
+	}
+
 }
