@@ -1,6 +1,6 @@
 package com.rapps.utility.learning.lms.model;
 
-public class ResetPassword {
+public class ResetPasswordModel {
 
 	private String loginId;
 	private String oldPassword;

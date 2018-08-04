@@ -1,17 +1,14 @@
 package com.rapps.utility.learning.lms.global;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
 import java.util.Map;
 
 import org.junit.Test;
 
 import com.rapps.utility.learning.lms.persistence.bean.Session;
 
-public class TestSessionCache {
+import junit.framework.TestCase;
+
+public class TestSessionCache extends TestCase {
 
 	@Test
 	public void testGetSessionCache() {
@@ -56,7 +53,7 @@ public class TestSessionCache {
 		assertEquals("removeSessionFromCache failed", 1, sessionMap.keySet().size());
 		assertNull("removeSessionFromCache failed", SessionCache.sessionExists(getS1Session().getSessionId()));
 	}
-	
+
 	@Test
 	public void testRemoveAllSessions() {
 		SessionCache.addSessionToCache(getS1Session());
