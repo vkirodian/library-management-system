@@ -12,8 +12,8 @@ import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
 import com.rapps.utility.learning.lms.global.LmsConstants;
 import com.rapps.utility.learning.lms.global.SessionCache;
-import com.rapps.utility.learning.lms.model.LoginInput;
-import com.rapps.utility.learning.lms.model.ResetPassword;
+import com.rapps.utility.learning.lms.model.LoginInputModel;
+import com.rapps.utility.learning.lms.model.ResetPasswordModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
 import com.rapps.utility.learning.lms.persistence.bean.User;
 import com.rapps.utility.learning.lms.persistence.service.SessionService;
@@ -52,7 +52,7 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	 * @return User session
 	 * @throws LmsException
 	 */
-	public Session authenticateUser(LoginInput loginInput) throws LmsException {
+	public Session authenticateUser(LoginInputModel loginInput) throws LmsException {
 		User user = userService.getUserByLoginId(loginInput.getLoginId());
 		if (!user.getPassword().equals(loginInput.getPassword())) {
 			LOG.error("Login failed incorrect credentials entered");
@@ -74,7 +74,7 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	 * @return User.
 	 * @throws LmsException
 	 */
-	public User resetPassword(ResetPassword resetPassword) throws LmsException {
+	public User resetPassword(ResetPasswordModel resetPassword) throws LmsException {
 		User user = userService.getUserByLoginId(resetPassword.getLoginId());
 		if (!user.getPassword().equals(resetPassword.getOldPassword())) {
 			LOG.error("Incorrect credentials entered");
@@ -99,7 +99,7 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 
 	private Session createSession(User user) {
 		Session session = new Session();
-		session.setLoggedInIpAddress("10.1.1.1");// TODO
+		session.setLoggedInIpAddress(super.getRemoteAddress());
 		session.setLastAccessTime(System.currentTimeMillis());
 		session.setLoggedInTime(System.currentTimeMillis());
 		session.setSessionId(UUID.randomUUID().toString());

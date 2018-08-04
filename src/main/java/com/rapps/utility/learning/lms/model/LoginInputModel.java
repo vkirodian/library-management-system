@@ -1,6 +1,6 @@
 package com.rapps.utility.learning.lms.model;
 
-public class LoginInput {
+public class LoginInputModel {
 
 	private String loginId;
 	private String password;

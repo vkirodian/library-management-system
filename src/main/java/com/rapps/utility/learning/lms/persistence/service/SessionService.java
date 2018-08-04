@@ -65,4 +65,11 @@ public class SessionService {
 		sessionRepository.delete(session);
 	}
 
+	/**
+	 * Delete all sessions
+	 */
+	public void deleteAllSessions() {
+		sessionRepository.deleteAll();
+	}
+
 }

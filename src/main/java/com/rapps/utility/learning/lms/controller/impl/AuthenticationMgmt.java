@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rapps.utility.learning.lms.controller.IAuthenticationMgmt;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.helper.AuthenticationMgmtHelper;
-import com.rapps.utility.learning.lms.model.LoginInput;
-import com.rapps.utility.learning.lms.model.ResetPassword;
+import com.rapps.utility.learning.lms.model.LoginInputModel;
+import com.rapps.utility.learning.lms.model.ResetPasswordModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
 
 /**
@@ -24,12 +24,12 @@ public class AuthenticationMgmt implements IAuthenticationMgmt {
 	AuthenticationMgmtHelper authenticationMgmthelper;
 
 	@Override
-	public Session login(@RequestBody LoginInput login) throws LmsException {
+	public Session login(@RequestBody LoginInputModel login) throws LmsException {
 		return authenticationMgmthelper.authenticateUser(login);
 	}
 
 	@Override
-	public void resetPassword(@RequestBody ResetPassword resetPassword) throws LmsException {
+	public void resetPassword(@RequestBody ResetPasswordModel resetPassword) throws LmsException {
 		authenticationMgmthelper.resetPassword(resetPassword);
 	}
 

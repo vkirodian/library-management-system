@@ -84,7 +84,7 @@ public class LmsFilter implements Filter {
 	public void destroy() {
 	}
 
-	private void verifySessionAndAuthorize(HttpServletRequest httpRequest) throws IOException {
+	protected void verifySessionAndAuthorize(HttpServletRequest httpRequest) throws IOException {
 		String sessionId = httpRequest.getHeader(LmsConstants.SESSION_ID);
 		if (sessionId == null) {
 			LOG.error("Session information missing in request");
@@ -110,14 +110,14 @@ public class LmsFilter implements Filter {
 		}
 	}
 
-	private JsonNode getJsonNode(String response) throws IOException {
+	protected JsonNode getJsonNode(String response) throws IOException {
 		if (response != null && !response.isEmpty()) {
 			return new ObjectMapper().readTree(response);
 		}
 		return null;
 	}
 
-	private GenericOutput getResponseStatus(JsonNode obj) {
+	protected GenericOutput getResponseStatus(JsonNode obj) {
 		GenericOutput model = new GenericOutput();
 		if (obj != null && obj.get("errorType") != null) {
 			OutputStatus status = new OutputStatus();
@@ -135,13 +135,13 @@ public class LmsFilter implements Filter {
 		return model;
 	}
 
-	private byte[] getBytes(GenericOutput response) throws JsonProcessingException {
+	protected byte[] getBytes(GenericOutput response) throws JsonProcessingException {
 		String serialized = new ObjectMapper().writeValueAsString(response);
 		LOG.debug("Response : {}", serialized);
 		return serialized.getBytes();
 	}
 
-	private String maskPassword(String jsonResponse) {
+	protected String maskPassword(String jsonResponse) {
 		return jsonResponse.replaceAll(jsonPattern, "$1" + "\"****" + "$3");
 	}
 }

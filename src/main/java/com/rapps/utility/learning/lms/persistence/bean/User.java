@@ -81,10 +81,4 @@ public class User {
 		this.userRole = userRole;
 	}
 
-	@Override
-	public String toString() {
-		return "User [userId=" + userId + ", loginId=" + loginId + ", passwordExpiryTms=" + passwordExpiryTms
-				+ ", emailId=" + emailId + ", userRole=" + userRole + "]";
-	}
-
 }

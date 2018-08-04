@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.rapps.utility.learning.lms.exception.LmsException;
-import com.rapps.utility.learning.lms.model.LoginInput;
-import com.rapps.utility.learning.lms.model.ResetPassword;
+import com.rapps.utility.learning.lms.model.LoginInputModel;
+import com.rapps.utility.learning.lms.model.ResetPasswordModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
 
 /**
@@ -27,7 +27,7 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@PostMapping(value = "login")
-	public Session login(LoginInput login) throws LmsException;
+	public Session login(LoginInputModel login) throws LmsException;
 
 	/**
 	 * API to reset password.
@@ -36,7 +36,7 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@PostMapping(value = "resetPassword")
-	public void resetPassword(ResetPassword resetPassword) throws LmsException;
+	public void resetPassword(ResetPasswordModel resetPassword) throws LmsException;
 
 	/**
 	 * Logs out current user.
