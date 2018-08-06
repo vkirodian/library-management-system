@@ -87,6 +87,41 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	}
 
 	/**
+	 * Update password for user.
+	 * 
+	 * @param resetPassword
+	 * @return User.
+	 * @throws LmsException
+	 */
+	public User updatePassword(ResetPasswordModel resetPassword) throws LmsException {
+		String sessionId = super.getSessionId();
+		Session session = SessionCache.sessionExists(sessionId);
+		User user = userService.getUserById(session.getUserId());
+		validatePasswordStrength(user.getLoginId(), user.getPassword(), resetPassword.getNewPassword());
+		user.setPassword(resetPassword.getNewPassword());
+		user.setPasswordExpiryTms(System.currentTimeMillis() + LmsConstants.PASSWORD_EXPIRY_TIME);
+		return userService.saveUser(user);
+	}
+
+	/**
+	 * Forgot password.
+	 * 
+	 * @param loginInput
+	 * @return
+	 * @throws LmsException
+	 */
+	public void forgotPassword(LoginInputModel loginInput) {
+		try {
+			User user = userService.getUserByLoginId(loginInput.getLoginId());
+			String emailId = user.getEmailId();
+			LOG.debug("Sending email to {}", emailId);// TODO send email
+		} catch (LmsException e) {
+			LOG.error("Error ", e);
+		}
+
+	}
+
+	/**
 	 * Logs out current user, removes session from cache and database.
 	 * 
 	 * @throws LmsException

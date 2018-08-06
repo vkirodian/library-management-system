@@ -34,6 +34,16 @@ public class AuthenticationMgmt implements IAuthenticationMgmt {
 	}
 
 	@Override
+	public void updatePassword(@RequestBody ResetPasswordModel resetPassword) throws LmsException {
+		authenticationMgmthelper.updatePassword(resetPassword);
+	}
+
+	@Override
+	public void forgotPassword(LoginInputModel login) throws LmsException {
+		authenticationMgmthelper.forgotPassword(login);
+	}
+
+	@Override
 	public void logout() throws LmsException {
 		authenticationMgmthelper.logout();
 	}

@@ -26,7 +26,7 @@ public class LmsException extends Exception {
 		this.errorMessage = getErrorMessage(errorType, reasonCode, objects);
 		this.errorReasonCode = reasonCode.getName();
 		this.errorReason = formatErrorReason(reasonCode.getMessage(), objects);
-
+		super.printStackTrace();
 	}
 
 	private static String getErrorMessage(final ErrorType errorType, final IMessages reasonCode,

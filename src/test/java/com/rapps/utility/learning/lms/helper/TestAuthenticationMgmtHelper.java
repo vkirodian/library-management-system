@@ -15,6 +15,7 @@ import com.rapps.utility.learning.lms.enums.MessagesEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
 import com.rapps.utility.learning.lms.global.LmsConstants;
+import com.rapps.utility.learning.lms.global.SessionCache;
 import com.rapps.utility.learning.lms.model.LoginInputModel;
 import com.rapps.utility.learning.lms.model.ResetPasswordModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
@@ -172,6 +173,22 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 	}
 
 	@Test
+	public void testUpdatePassword_Success() throws LmsException {
+		User user = new User();
+		user.setLoginId(LOGIN);
+		user.setPassword(PSWD);
+		user.setUserId("u1");
+		SessionCache.removeAllSessions();
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		SessionCache.addSessionToCache(getSession());
+		when(userService.getUserById("u1")).thenReturn(user);
+		ResetPasswordModel reset = getResetPassword();
+		reset.setLoginId(null);
+		reset.setOldPassword(null);
+		helper.updatePassword(reset);
+	}
+
+	@Test
 	public void testLogout_Success() throws LmsException {
 		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
 		when(sessionService.getSession(SESSION_ID_1)).thenReturn(new Session());
@@ -184,6 +201,19 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		when(sessionService.getSession(SESSION_ID_1))
 				.thenThrow(new LmsException(ErrorType.FAILURE, MessagesEnum.FAILURE));
 		helper.logout();
+	}
+	
+	@Test
+	public void testForgotPassword() throws LmsException {
+		User user = new User();
+		user.setLoginId(LOGIN);
+		user.setPassword(PSWD);
+		user.setUserId("u1");
+		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
+		helper.forgotPassword(getLoginInput());
+		
+		when(userService.getUserByLoginId(LOGIN)).thenThrow(new LmsException(ErrorType.FAILURE, MessagesEnum.FAILURE));
+		helper.forgotPassword(getLoginInput());
 	}
 
 	private LoginInputModel getLoginInput() {
