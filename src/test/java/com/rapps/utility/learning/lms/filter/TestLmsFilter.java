@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,7 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.rapps.utility.learning.lms.enums.MessagesEnum;
-import com.rapps.utility.learning.lms.enums.UserRole;
+import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
 import com.rapps.utility.learning.lms.global.LmsConstants;
@@ -73,12 +72,13 @@ public class TestLmsFilter extends TestCase {
 
 	@Test(expected = IOException.class)
 	public void testVerifySessionAndAuthorize_UserRoleNotFound() throws IOException, LmsException {
-		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
-		when(sessionMgmtHelper.getRoleForUserSession(SESSION_ID_1))
-				.thenThrow(new LmsException(ErrorType.FAILURE, MessagesEnum.USER_NOT_FOUND));
-		SessionCache.removeAllSessions();
 		Session s = new Session();
 		s.setSessionId(SESSION_ID_1);
+		
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		when(sessionMgmtHelper.getRoleForUserSession(s))
+				.thenThrow(new LmsException(ErrorType.FAILURE, MessagesEnum.USER_NOT_FOUND));
+		SessionCache.removeAllSessions();
 		SessionCache.addSessionToCache(s);
 		filter.verifySessionAndAuthorize(httpRequest);
 	}
@@ -86,7 +86,7 @@ public class TestLmsFilter extends TestCase {
 	@Test(expected = IOException.class)
 	public void testVerifySessionAndAuthorize_UnauthorizedUserRole() throws IOException, LmsException {
 		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
-		when(sessionMgmtHelper.getRoleForUserSession(SESSION_ID_1)).thenReturn(UserRole.LIBRARIAN);
+		//when(sessionMgmtHelper.getRoleForUserSession(SESSION_ID_1)).thenReturn(UserRoleEnum.LIBRARIAN);
 		when(httpRequest.getRequestURI()).thenReturn("/lms/user/users");
 		SessionCache.removeAllSessions();
 		Session s = new Session();
@@ -97,12 +97,12 @@ public class TestLmsFilter extends TestCase {
 
 	@Test
 	public void testVerifySessionAndAuthorize_AuthorizedUserRole() throws IOException, LmsException {
-		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
-		when(sessionMgmtHelper.getRoleForUserSession(SESSION_ID_1)).thenReturn(UserRole.SUPER_ADMIN);
-		when(httpRequest.getRequestURI()).thenReturn("/lms/user/users");
-		SessionCache.removeAllSessions();
 		Session s = new Session();
 		s.setSessionId(SESSION_ID_1);
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		when(sessionMgmtHelper.getRoleForUserSession(s)).thenReturn(UserRoleEnum.SUPER_ADMIN);
+		when(httpRequest.getRequestURI()).thenReturn("/lms/user/users");
+		SessionCache.removeAllSessions();
 		SessionCache.addSessionToCache(s);
 		filter.verifySessionAndAuthorize(httpRequest);
 	}

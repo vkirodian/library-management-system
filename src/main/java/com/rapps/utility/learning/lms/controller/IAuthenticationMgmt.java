@@ -37,6 +37,25 @@ public interface IAuthenticationMgmt {
 	 */
 	@PostMapping(value = "resetPassword")
 	public void resetPassword(ResetPasswordModel resetPassword) throws LmsException;
+	
+	
+	/**
+	 * API to update password.
+	 * 
+	 * @param login
+	 * @throws LmsException
+	 */
+	@PostMapping(value = "updatePassword")
+	public void updatePassword(ResetPasswordModel resetPassword) throws LmsException;
+	
+	/**
+	 * API for forgot password.
+	 * 
+	 * @param login
+	 * @throws LmsException
+	 */
+	@PostMapping(value = "forgotPassword")
+	public void forgotPassword(LoginInputModel login) throws LmsException;
 
 	/**
 	 * Logs out current user.

@@ -14,7 +14,8 @@ create table USER (
 insert into USER (USERID, LOGINID, PASSWORD, PASSWORDEXPIRYTMS, EMAILID, USERROLE) 
 VALUES 
 ('10000000-0000-0000-0000-000000000001', 'admin', 'admin', 0, 'admin@lms.com', 0),
-('10000000-0000-0000-0000-000000000002', 'librarian', 'librarian', 0, 'librarian@lms.com', 1);
+('10000000-0000-0000-0000-000000000002', 'librarian', 'librarian', 0, 'librarian@lms.com', 1),
+('10000000-0000-0000-0000-000000000003', 'user', 'user', 0, 'user@lms.com', 2);
 
 create table SESSION (
 	SESSIONID varchar(36) primary key,

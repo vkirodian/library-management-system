@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rapps.utility.learning.lms.enums.ApiAuthorizationEnum;
 import com.rapps.utility.learning.lms.enums.MessagesEnum;
-import com.rapps.utility.learning.lms.enums.UserRole;
+import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
 import com.rapps.utility.learning.lms.global.LmsConstants;
@@ -96,13 +96,13 @@ public class LmsFilter implements Filter {
 				throw new IOException(MessagesEnum.SESSION_MISSING.getMessage());
 			}
 			try {
-				UserRole userRole = sessionMgmtHelper.getRoleForUserSession(sessionId);
+				UserRoleEnum userRole = sessionMgmtHelper.getRoleForUserSession(session);
 				boolean isAuthorized = ApiAuthorizationEnum.doesRoleExistForApi(httpRequest.getRequestURI(), userRole);
 				if (!isAuthorized) {
 					LOG.error("User role {} is unauthorized to invoke API {}", userRole, httpRequest.getRequestURI());
 					throw new IOException("Unauthorized");
 				}
-				sessionMgmtHelper.updateLastAccessTime(sessionId);
+				sessionMgmtHelper.updateLastAccessTime(session);
 			} catch (LmsException e) {
 				LOG.error("Unable to get User Role.");
 				throw new IOException(e.getErrorReason());

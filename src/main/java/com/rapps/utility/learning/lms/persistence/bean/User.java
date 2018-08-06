@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.rapps.utility.learning.lms.enums.UserRole;
+import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 
 @Entity
 @Table(name = "user")
@@ -31,7 +31,7 @@ public class User {
 	private String emailId;
 
 	@Column(name = "USERROLE")
-	private UserRole userRole;
+	private UserRoleEnum userRole;
 
 	public String getUserId() {
 		return userId;
@@ -73,11 +73,11 @@ public class User {
 		this.emailId = emailId;
 	}
 
-	public UserRole getUserRole() {
+	public UserRoleEnum getUserRole() {
 		return userRole;
 	}
 
-	public void setUserRole(UserRole userRole) {
+	public void setUserRole(UserRoleEnum userRole) {
 		this.userRole = userRole;
 	}
 
