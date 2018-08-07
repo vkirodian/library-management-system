@@ -1,5 +1,10 @@
 package com.rapps.utility.learning.lms.model;
 
+/**
+ * 
+ * @author vkirodian
+ *
+ */
 public class LoginInputModel {
 
 	private String loginId;

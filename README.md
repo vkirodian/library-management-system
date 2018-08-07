@@ -3,6 +3,8 @@ A feature rich Library Management System with following features
 1. Authentication
 	* Authentication features : Login & Logout(Session maintenance), Update/Reset/Forgot password.
 2. Authorization based on roles : Administrator, Librarian, Users
+3. User Management
+	* User Management features : View Self Profile, View User list
 
 ## TODO 
 1. Add Book
@@ -23,3 +25,7 @@ A feature rich Library Management System with following features
 14. Reject new book request
 15. Approve new book request
 16. New book request tracker
+
+17. Add User
+18. Update User
+19. Delete User

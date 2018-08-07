@@ -1,5 +1,6 @@
 package com.rapps.utility.learning.lms.persistence.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -13,6 +14,6 @@ import org.springframework.data.repository.NoRepositoryBean;
  *            Type of bean for which the repository has been made.
  */
 @NoRepositoryBean
-public interface BaseRepository<T> extends CrudRepository<T, String> {
+public interface BaseRepository<T> extends JpaRepository<T, String> {
 
 }

@@ -24,7 +24,7 @@ public interface IUserMgmt {
 	 * @throws LmsException
 	 */
 	@GetMapping(value = "userDetails")
-	public User getUserDetails() throws LmsException;
+	User getUserDetails() throws LmsException;
 
 	/**
 	 * Get list of all users in the system.
@@ -33,5 +33,5 @@ public interface IUserMgmt {
 	 * @throws LmsException
 	 */
 	@GetMapping(value = "users")
-	public List<User> getUsers() throws LmsException;
+	List<User> getUsers() throws LmsException;
 }

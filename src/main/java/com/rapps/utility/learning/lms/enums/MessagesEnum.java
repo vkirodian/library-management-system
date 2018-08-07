@@ -31,6 +31,9 @@ public enum MessagesEnum implements IMessages {
 	SESSION_NOT_FOUND("Session not found."),
 	SESSION_MISSING("Session information is missing in the request or is invalid."),
 	SESSION_EXPIRED("User session expired."),
+	
+	//Book Service
+	BOOK_NOT_FOUND("Book with ID {0} not found"),
 
 	
 	//
