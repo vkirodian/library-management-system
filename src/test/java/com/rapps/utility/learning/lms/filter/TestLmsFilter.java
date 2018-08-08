@@ -94,6 +94,18 @@ public class TestLmsFilter extends TestCase {
 		SessionCache.addSessionToCache(s);
 		filter.verifySessionAndAuthorize(httpRequest);
 	}
+	
+	@Test(expected = IOException.class)
+	public void testVerifySessionAndAuthorize_UnauthorizedUserRoleNotFound() throws IOException, LmsException {
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		//when(sessionMgmtHelper.getRoleForUserSession(SESSION_ID_1)).thenReturn(UserRoleEnum.LIBRARIAN);
+		when(httpRequest.getRequestURI()).thenReturn("/dummy/url");
+		SessionCache.removeAllSessions();
+		Session s = new Session();
+		s.setSessionId(SESSION_ID_1);
+		SessionCache.addSessionToCache(s);
+		filter.verifySessionAndAuthorize(httpRequest);
+	}
 
 	@Test
 	public void testVerifySessionAndAuthorize_AuthorizedUserRole() throws IOException, LmsException {

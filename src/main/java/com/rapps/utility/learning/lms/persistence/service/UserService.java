@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +37,7 @@ public class UserService {
 	 * @return List of User
 	 */
 	public List<User> getUsers() {
-		return (List<User>) userRepository.findAll();
+		return userRepository.findAll();
 	}
 
 	/**
@@ -55,14 +57,39 @@ public class UserService {
 		}
 		return user;
 	}
-	
+
+	/**
+	 * User user by ID
+	 * 
+	 * @param userId
+	 *            User ID
+	 * @return User
+	 * @throws LmsException
+	 *             if User not found
+	 */
+	@Cacheable(value = "user", key = "#userId")
 	public User getUserById(String userId) throws LmsException {
+		LOG.debug("CALLED METHOD GET USER BY ID {}", userId);
 		Optional<User> users = userRepository.findById(userId);
 		if (users.isPresent()) {
 			return users.get();
 		} else {
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.USER_NOT_FOUND);
 		}
+	}
+
+	/**
+	 * Update User.
+	 * 
+	 * @param user
+	 *            User
+	 * @return Updated User
+	 * @throws LmsException
+	 *             If user not found
+	 */
+	@CachePut(value = "user", key = "#user.userId")
+	public User updateUser(User user) {
+		return saveUser(user);
 	}
 
 	/**

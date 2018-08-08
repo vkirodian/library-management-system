@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  *
  */
 @Configuration
+@EnableCaching
 @EnableTransactionManagement
 @EnableJpaRepositories("com.rapps.utility.learning.lms.persistence.repository")
 public class PersistenceServiceProvider {
