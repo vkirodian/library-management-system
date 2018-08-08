@@ -64,5 +64,9 @@ public class TestUserService extends TestCase {
 	public void testSaveUser() {
 		service.saveUser(new User());
 	}
-
+	
+	@Test
+	public void testUpdateUser() {
+		service.updateUser(new User());
+	}
 }

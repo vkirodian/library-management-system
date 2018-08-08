@@ -195,14 +195,23 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		helper.logout();
 	}
 
-	@Test(expected = LmsException.class)
+	@Test
 	public void testLogout_Exception() throws LmsException {
 		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
 		when(sessionService.getSession(SESSION_ID_1))
-				.thenThrow(new LmsException(ErrorType.FAILURE, MessagesEnum.FAILURE));
-		helper.logout();
+				.thenThrow(new LmsException(ErrorType.FAILURE, MessagesEnum.PASSWORD_LENGTH_ERROR, null, 1));
+		try {
+			helper.logout();
+		} catch (LmsException e) {
+			assertEquals("", ErrorType.FAILURE.getNumValue(), e.getErrorType().getNumValue());
+			assertEquals("", "Password should be minimum  character and maximum 1 characters long.",
+					e.getErrorReason());
+			assertEquals("", "PASSWORD_LENGTH_ERROR", e.getErrorReasonCode());
+			assertEquals("", "Operation failed: Password should be minimum  character and maximum 1 characters long.",
+					e.getErrorMessage());
+		}
 	}
-	
+
 	@Test
 	public void testForgotPassword() throws LmsException {
 		User user = new User();
@@ -211,7 +220,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		user.setUserId("u1");
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
 		helper.forgotPassword(getLoginInput());
-		
+
 		when(userService.getUserByLoginId(LOGIN)).thenThrow(new LmsException(ErrorType.FAILURE, MessagesEnum.FAILURE));
 		helper.forgotPassword(getLoginInput());
 	}

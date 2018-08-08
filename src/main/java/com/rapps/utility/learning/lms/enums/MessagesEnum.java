@@ -26,11 +26,16 @@ public enum MessagesEnum implements IMessages {
 	
 	//User Service
 	USER_NOT_FOUND("User not found."),
+	CANNOT_UPDATE_LOGINID("Login ID cannot be updated for a user."),
+	CANNOT_UPDATE_USER("User {0} cannot update {1} for {2}"),
 	
 	//Session Service
 	SESSION_NOT_FOUND("Session not found."),
 	SESSION_MISSING("Session information is missing in the request or is invalid."),
 	SESSION_EXPIRED("User session expired."),
+	
+	//Book Service
+	BOOK_NOT_FOUND("Book with ID {0} not found"),
 
 	
 	//

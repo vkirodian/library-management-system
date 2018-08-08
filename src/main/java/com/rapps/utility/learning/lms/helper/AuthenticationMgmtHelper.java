@@ -147,7 +147,7 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 		sessionService.deleteSession(session);
 	}
 
-	private void validatePasswordStrength(String loginId, String oldPassword, String newPassword) throws LmsException {
+	protected void validatePasswordStrength(String loginId, String oldPassword, String newPassword) throws LmsException {
 		if (oldPassword.equals(newPassword)) {
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.OLD_NEW_PASWORD_SAME);
 		}

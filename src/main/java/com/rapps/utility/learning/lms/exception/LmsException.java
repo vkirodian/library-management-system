@@ -18,6 +18,14 @@ public class LmsException extends Exception {
 	private final String errorReason;
 	private final String errorReasonCode;
 	private final String errorMessage;
+	
+
+	public LmsException() {
+		this.errorType = ErrorType.FAILURE;
+		this.errorMessage = getErrorMessage(ErrorType.FAILURE, MessagesEnum.INTERNAL_ERROR, "Internal error");
+		this.errorReasonCode = MessagesEnum.INTERNAL_ERROR.getName();
+		this.errorReason = formatErrorReason(MessagesEnum.INTERNAL_ERROR.getMessage(), "Internal error");
+	}
 
 	public LmsException(ErrorType errorType, IMessages reasonCode, Object... objects) {
 		super(getErrorMessage(errorType, reasonCode, objects));

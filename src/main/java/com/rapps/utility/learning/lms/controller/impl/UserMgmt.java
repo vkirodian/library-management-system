@@ -3,6 +3,7 @@ package com.rapps.utility.learning.lms.controller.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rapps.utility.learning.lms.controller.IUserMgmt;
@@ -30,6 +31,11 @@ public class UserMgmt implements IUserMgmt {
 	@Override
 	public List<User> getUsers() throws LmsException {
 		return userMgmtHelper.getUsers();
+	}
+
+	@Override
+	public User updateUser(@RequestBody User user) throws LmsException {
+		return userMgmtHelper.updateUser(user);
 	}
 
 }
