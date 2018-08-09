@@ -14,8 +14,8 @@ import com.rapps.utility.learning.lms.global.LmsConstants;
 import com.rapps.utility.learning.lms.global.SessionCache;
 import com.rapps.utility.learning.lms.model.LoginInputModel;
 import com.rapps.utility.learning.lms.model.ResetPasswordModel;
+import com.rapps.utility.learning.lms.model.UserModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
-import com.rapps.utility.learning.lms.persistence.bean.User;
 import com.rapps.utility.learning.lms.persistence.service.SessionService;
 import com.rapps.utility.learning.lms.persistence.service.UserService;
 
@@ -53,7 +53,7 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	 * @throws LmsException
 	 */
 	public Session authenticateUser(LoginInputModel loginInput) throws LmsException {
-		User user = userService.getUserByLoginId(loginInput.getLoginId());
+		UserModel user = userService.getUserByLoginId(loginInput.getLoginId());
 		if (!user.getPassword().equals(loginInput.getPassword())) {
 			LOG.error("Login failed incorrect credentials entered");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.LOGIN_FAILED);
@@ -74,8 +74,8 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	 * @return User.
 	 * @throws LmsException
 	 */
-	public User resetPassword(ResetPasswordModel resetPassword) throws LmsException {
-		User user = userService.getUserByLoginId(resetPassword.getLoginId());
+	public UserModel resetPassword(ResetPasswordModel resetPassword) throws LmsException {
+		UserModel user = userService.getUserByLoginId(resetPassword.getLoginId());
 		if (!user.getPassword().equals(resetPassword.getOldPassword())) {
 			LOG.error("Incorrect credentials entered");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.LOGIN_FAILED);
@@ -93,10 +93,10 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	 * @return User.
 	 * @throws LmsException
 	 */
-	public User updatePassword(ResetPasswordModel resetPassword) throws LmsException {
+	public UserModel updatePassword(ResetPasswordModel resetPassword) throws LmsException {
 		String sessionId = super.getSessionId();
 		Session session = SessionCache.sessionExists(sessionId);
-		User user = userService.getUserById(session.getUserId());
+		UserModel user = userService.getUserById(session.getUserId());
 		validatePasswordStrength(user.getLoginId(), user.getPassword(), resetPassword.getNewPassword());
 		user.setPassword(resetPassword.getNewPassword());
 		user.setPasswordExpiryTms(System.currentTimeMillis() + LmsConstants.PASSWORD_EXPIRY_TIME);
@@ -112,7 +112,7 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	 */
 	public void forgotPassword(LoginInputModel loginInput) {
 		try {
-			User user = userService.getUserByLoginId(loginInput.getLoginId());
+			UserModel user = userService.getUserByLoginId(loginInput.getLoginId());
 			String emailId = user.getEmailId();
 			LOG.debug("Sending email to {}", emailId);// TODO send email
 		} catch (LmsException e) {
@@ -132,7 +132,7 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 		deleteSession(sessionId);
 	}
 
-	private Session createSession(User user) {
+	private Session createSession(UserModel user) {
 		Session session = new Session();
 		session.setLoggedInIpAddress(super.getRemoteAddress());
 		session.setLastAccessTime(System.currentTimeMillis());

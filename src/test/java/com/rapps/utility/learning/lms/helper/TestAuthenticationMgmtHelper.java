@@ -18,8 +18,8 @@ import com.rapps.utility.learning.lms.global.LmsConstants;
 import com.rapps.utility.learning.lms.global.SessionCache;
 import com.rapps.utility.learning.lms.model.LoginInputModel;
 import com.rapps.utility.learning.lms.model.ResetPasswordModel;
+import com.rapps.utility.learning.lms.model.UserModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
-import com.rapps.utility.learning.lms.persistence.bean.User;
 import com.rapps.utility.learning.lms.persistence.service.SessionService;
 import com.rapps.utility.learning.lms.persistence.service.UserService;
 
@@ -46,7 +46,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test
 	public void testAuthenticateUser_Success() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD);
 		user.setPasswordExpiryTms(System.currentTimeMillis() + EXTRA_TIME);
@@ -59,7 +59,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test(expected = LmsException.class)
 	public void testAuthenticateUser_IncorrectCreds() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD + " error");
 		user.setPasswordExpiryTms(System.currentTimeMillis() + EXTRA_TIME);
@@ -69,7 +69,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test(expected = LmsException.class)
 	public void testAuthenticateUser_ExpiredPassword() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD);
 		user.setPasswordExpiryTms(System.currentTimeMillis() - EXTRA_TIME);
@@ -79,7 +79,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test(expected = LmsException.class)
 	public void testResetPassword_OldPasswordIncorrect() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword("admin");
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
@@ -88,7 +88,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test(expected = LmsException.class)
 	public void testResetPassword_OldNewPasswordSame() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD);
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
@@ -99,7 +99,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test(expected = LmsException.class)
 	public void testResetPassword_NewPasswordNull() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD);
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
@@ -110,7 +110,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test(expected = LmsException.class)
 	public void testResetPassword_NewPasswordEmpty() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD);
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
@@ -121,7 +121,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test(expected = LmsException.class)
 	public void testResetPassword_LoginIdNewPasswordSame() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD);
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
@@ -132,7 +132,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test(expected = LmsException.class)
 	public void testResetPassword_LessThanMinLength() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD);
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
@@ -143,7 +143,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test(expected = LmsException.class)
 	public void testResetPassword_MoreThanMaxLength() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD);
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
@@ -154,7 +154,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test(expected = LmsException.class)
 	public void testResetPassword_RegexFailed() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD);
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
@@ -165,7 +165,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test
 	public void testResetPassword_Success() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD);
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
@@ -174,7 +174,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test
 	public void testUpdatePassword_Success() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD);
 		user.setUserId("u1");
@@ -214,7 +214,7 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 
 	@Test
 	public void testForgotPassword() throws LmsException {
-		User user = new User();
+		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD);
 		user.setUserId("u1");

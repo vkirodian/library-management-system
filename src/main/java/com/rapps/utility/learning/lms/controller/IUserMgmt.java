@@ -2,12 +2,14 @@ package com.rapps.utility.learning.lms.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.rapps.utility.learning.lms.exception.LmsException;
-import com.rapps.utility.learning.lms.persistence.bean.User;
+import com.rapps.utility.learning.lms.model.UserModel;
 
 /**
  * Interface providing API' related to user service.
@@ -23,18 +25,56 @@ public interface IUserMgmt {
 	 * 
 	 * @return User
 	 * @throws LmsException
+	 *             If session is invalid or User not found
 	 */
 	@GetMapping(value = "userDetails")
-	User getUserDetails() throws LmsException;
+	UserModel getUserDetails() throws LmsException;
+
+	/**
+	 * Get User.
+	 * 
+	 * @param uid
+	 *            User ID
+	 * @return User
+	 * @throws LmsException
+	 *             If User not found
+	 */
+	@GetMapping(value = "users/{uid}")
+	UserModel getUser(String uid) throws LmsException;
 
 	/**
 	 * Get list of all users in the system.
 	 * 
+	 * @param filter
+	 *            User Filter
 	 * @return List of Users
-	 * @throws LmsException
+	 * 
 	 */
 	@GetMapping(value = "users")
-	List<User> getUsers() throws LmsException;
+	List<UserModel> getUsers(UserModel filter);
+
+	/**
+	 * Add a new User.
+	 * 
+	 * @param user
+	 *            User
+	 * @return Added User
+	 * @throws LmsException
+	 *             If mandatory fields missing
+	 */
+	@PostMapping(value = "add")
+	UserModel addUser(UserModel user) throws LmsException;
+
+	/**
+	 * Delete a User.
+	 * 
+	 * @param uid
+	 *            User ID
+	 * @throws LmsException
+	 *             If User not found
+	 */
+	@DeleteMapping(value = "users/{uid}")
+	void deleteUser(String uid) throws LmsException;
 
 	/**
 	 * Update the given user.
@@ -47,5 +87,5 @@ public interface IUserMgmt {
 	 */
 
 	@PutMapping(value = "update")
-	User updateUser(User user) throws LmsException;
+	UserModel updateUser(UserModel user) throws LmsException;
 }

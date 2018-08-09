@@ -16,8 +16,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.global.LmsConstants;
+import com.rapps.utility.learning.lms.model.UserModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
-import com.rapps.utility.learning.lms.persistence.bean.User;
 import com.rapps.utility.learning.lms.persistence.service.SessionService;
 import com.rapps.utility.learning.lms.persistence.service.UserService;
 
@@ -51,22 +51,24 @@ public class TestUserMgmtHelper extends TestCase {
 		s.setUserId("u1");
 		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn("Session_id_1");
 		when(sessionService.getSession("Session_id_1")).thenReturn(s);
-		when(userService.getUserById("u1")).thenReturn(new User());
-		User u = helper.getUserDetails();
+		when(userService.getUserById("u1")).thenReturn(new UserModel());
+		UserModel u = helper.getUserDetails();
 		assertNotNull("", u);
 	}
 
 	@Test
 	public void testGetUsers() {
-		List<User> users = Arrays.asList(new User(), new User());
-		when(userService.getUsers()).thenReturn(users);
-		List<User> accUsers = helper.getUsers();
+		UserModel filter = new UserModel();
+		filter.setLoginId("admin");
+		List<UserModel> users = Arrays.asList(new UserModel(), new UserModel());
+		when(userService.getUsers(filter)).thenReturn(users);
+		List<UserModel> accUsers = helper.getUsers(filter);
 		assertEquals("", users, accUsers);
 	}
 
 	@Test(expected = LmsException.class)
 	public void testUpdateUser_UserNotFound() throws LmsException {
-		User u = new User();
+		UserModel u = new UserModel();
 		u.setUserId("u1");
 		when(userService.getUserById("u1")).thenThrow(new LmsException());
 		helper.updateUser(u);
@@ -74,11 +76,11 @@ public class TestUserMgmtHelper extends TestCase {
 
 	@Test(expected = LmsException.class)
 	public void testUpdateUser_NonAdminUpdatingOtherUser() throws LmsException {
-		User methodInput = new User();
+		UserModel methodInput = new UserModel();
 		methodInput.setUserId("u1");
 		methodInput.setLoginId("l1");
 
-		User loggedInUser = new User();
+		UserModel loggedInUser = new UserModel();
 		loggedInUser.setUserId("lg1");
 		loggedInUser.setLoginId("logged");
 		loggedInUser.setUserRole(UserRoleEnum.LIBRARIAN);
@@ -92,12 +94,12 @@ public class TestUserMgmtHelper extends TestCase {
 
 	@Test(expected = LmsException.class)
 	public void testUpdateUser_NonAdminUpdatingRole() throws LmsException {
-		User methodInput = new User();
+		UserModel methodInput = new UserModel();
 		methodInput.setUserId("lg1");
 		methodInput.setLoginId("logged");
 		methodInput.setUserRole(UserRoleEnum.USERS);
 
-		User loggedInUser = new User();
+		UserModel loggedInUser = new UserModel();
 		loggedInUser.setUserId("lg1");
 		loggedInUser.setLoginId("logged");
 		loggedInUser.setUserRole(UserRoleEnum.LIBRARIAN);
@@ -110,11 +112,11 @@ public class TestUserMgmtHelper extends TestCase {
 
 	@Test(expected = LmsException.class)
 	public void testUpdateUser_LoginIdUpdated() throws LmsException {
-		User methodInput = new User();
+		UserModel methodInput = new UserModel();
 		methodInput.setUserId("lg1");
 		methodInput.setLoginId("logged_1");
 
-		User loggedInUser = new User();
+		UserModel loggedInUser = new UserModel();
 		loggedInUser.setUserId("lg1");
 		loggedInUser.setLoginId("logged");
 		loggedInUser.setUserRole(UserRoleEnum.LIBRARIAN);
@@ -127,43 +129,43 @@ public class TestUserMgmtHelper extends TestCase {
 
 	@Test
 	public void testUpdateUser_PasswordEmpty() throws LmsException {
-		User methodInput = new User();
+		UserModel methodInput = new UserModel();
 		methodInput.setUserId("lg1");
 		methodInput.setLoginId("logged");
 		methodInput.setEmailId("newemail.lms.com");
 
-		User loggedInUser = new User();
+		UserModel loggedInUser = new UserModel();
 		loggedInUser.setUserId("lg1");
 		loggedInUser.setLoginId("logged");
 		loggedInUser.setUserRole(UserRoleEnum.LIBRARIAN);
 
 		getSession();
 		when(userService.getUserById("lg1")).thenReturn(loggedInUser);
-		when(userService.saveUser(methodInput)).thenReturn(methodInput);
+		when(userService.updateUser(methodInput)).thenReturn(methodInput);
 
-		User actual = helper.updateUser(methodInput);
+		UserModel actual = helper.updateUser(methodInput);
 		assertEquals("", actual.getEmailId(), "newemail.lms.com");
 
 	}
 
 	@Test
 	public void testUpdateUser_NonAdminUserSuccess() throws LmsException {
-		User methodInput = new User();
+		UserModel methodInput = new UserModel();
 		methodInput.setUserId("lg1");
 		methodInput.setLoginId("logged");
 		methodInput.setEmailId("newemail.lms.com");
 		methodInput.setPassword("newpassword");
 
-		User loggedInUser = new User();
+		UserModel loggedInUser = new UserModel();
 		loggedInUser.setUserId("lg1");
 		loggedInUser.setLoginId("logged");
 		loggedInUser.setUserRole(UserRoleEnum.LIBRARIAN);
 
 		getSession();
 		when(userService.getUserById("lg1")).thenReturn(loggedInUser);
-		when(userService.saveUser(methodInput)).thenReturn(methodInput);
+		when(userService.updateUser(methodInput)).thenReturn(methodInput);
 
-		User actual = helper.updateUser(methodInput);
+		UserModel actual = helper.updateUser(methodInput);
 		assertEquals("", actual.getEmailId(), "newemail.lms.com");
 		assertEquals("", actual.getPassword(), "newpassword");
 		assertTrue("", actual.getPasswordExpiryTms() > System.currentTimeMillis());
@@ -171,12 +173,12 @@ public class TestUserMgmtHelper extends TestCase {
 
 	@Test
 	public void testUpdateUser_AdminUserSuccess() throws LmsException {
-		User methodInput = new User();
+		UserModel methodInput = new UserModel();
 		methodInput.setUserId("u1");
 		methodInput.setEmailId("newemail.lms.com");
 		methodInput.setUserRole(UserRoleEnum.USERS);
 
-		User loggedInUser = new User();
+		UserModel loggedInUser = new UserModel();
 		loggedInUser.setUserId("lg1");
 		loggedInUser.setLoginId("logged");
 		loggedInUser.setUserRole(UserRoleEnum.SUPER_ADMIN);
@@ -184,11 +186,103 @@ public class TestUserMgmtHelper extends TestCase {
 		getSession();
 		when(userService.getUserById("u1")).thenReturn(methodInput);
 		when(userService.getUserById("lg1")).thenReturn(loggedInUser);
-		when(userService.saveUser(methodInput)).thenReturn(methodInput);
+		when(userService.updateUser(methodInput)).thenReturn(methodInput);
 
-		User actual = helper.updateUser(methodInput);
+		UserModel actual = helper.updateUser(methodInput);
 		assertEquals("", actual.getEmailId(), "newemail.lms.com");
 		assertEquals("", actual.getUserRole(), UserRoleEnum.USERS);
+	}
+
+	@Test(expected = LmsException.class)
+	public void testAddUser_LoginIdEmpty() throws LmsException {
+		UserModel u = new UserModel();
+		u.setPassword("AdmiN@123");
+		u.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		helper.addUser(u);
+	}
+
+	@Test(expected = LmsException.class)
+	public void testAddUser_PasswordEmpty() throws LmsException {
+		UserModel u = new UserModel();
+		u.setLoginId("admin");
+		u.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		helper.addUser(u);
+	}
+
+	@Test(expected = LmsException.class)
+	public void testAddUser_RoleEmpty() throws LmsException {
+		UserModel u = new UserModel();
+		u.setLoginId("admin");
+		u.setPassword("AdmiN@123");
+		helper.addUser(u);
+	}
+
+	@Test
+	public void testAddUser_Success() throws LmsException {
+		UserModel u = new UserModel();
+		u.setLoginId("admin");
+		u.setPassword("AdmiN@123");
+		u.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		when(userService.saveUser(u)).thenReturn(u);
+		UserModel acc = helper.addUser(u);
+		assertEquals("", acc, u);
+	}
+
+	@Test(expected = LmsException.class)
+	public void testGetUser_IdNull() throws LmsException {
+		helper.getUser(null);
+	}
+
+	@Test
+	public void testGetUser_IdSuccess() throws LmsException {
+		UserModel u = new UserModel();
+		u.setLoginId("admin");
+		u.setPassword("AdmiN@123");
+		u.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		when(userService.getUserById("uid")).thenReturn(u);
+		UserModel acc = helper.getUser("uid");
+		assertEquals("", acc, u);
+	}
+	
+	@Test(expected = LmsException.class)
+	public void testDeleteUser_IdNull() throws LmsException {
+		helper.deleteUser(null);
+	}
+	
+	@Test(expected = LmsException.class)
+	public void testDeleteUser_SelfDelete() throws LmsException {
+		Session s = new Session();
+		s.setSessionId("Session_id_1");
+		s.setUserId("u1");
+		
+		UserModel u = new UserModel();
+		u.setUserId("u1");
+		u.setLoginId("admin");
+		u.setPassword("AdmiN@123");
+		u.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn("Session_id_1");
+		when(sessionService.getSession("Session_id_1")).thenReturn(s);
+		when(userService.getUserById("u1")).thenReturn(u);
+		helper.deleteUser("u1");
+	}
+	
+	@Test
+	public void testDeleteUser_Success() throws LmsException {
+		Session s = new Session();
+		s.setSessionId("Session_id_1");
+		s.setUserId("u1");
+		
+		UserModel u = new UserModel();
+		u.setUserId("u1");
+		u.setLoginId("admin");
+		u.setPassword("AdmiN@123");
+		u.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn("Session_id_1");
+		when(sessionService.getSession("Session_id_1")).thenReturn(s);
+		when(userService.getUserById("u1")).thenReturn(u);
+		helper.deleteUser("u2");
 	}
 
 	private Session getSession() throws LmsException {

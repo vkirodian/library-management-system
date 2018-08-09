@@ -9,8 +9,8 @@ import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
 import com.rapps.utility.learning.lms.global.LmsConstants;
 import com.rapps.utility.learning.lms.global.SessionCache;
+import com.rapps.utility.learning.lms.model.UserModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
-import com.rapps.utility.learning.lms.persistence.bean.User;
 import com.rapps.utility.learning.lms.persistence.service.SessionService;
 import com.rapps.utility.learning.lms.persistence.service.UserService;
 
@@ -44,7 +44,7 @@ public class SessionMgmtHelper {
 			SessionCache.removeSessionFromCache(session.getSessionId());
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.SESSION_EXPIRED);
 		}
-		User user = userService.getUserById(session.getUserId());
+		UserModel user = userService.getUserById(session.getUserId());
 		return user.getUserRole();
 	}
 
