@@ -22,6 +22,12 @@ public interface BookRepository extends BaseRepository<Book> {
 	 *            Title
 	 * @param author
 	 *            Author
+	 * @param category
+	 *            Category
+	 * @param language
+	 *            Language
+	 * @param edition
+	 *            Edition
 	 * @return List of Books
 	 */
 	@Query("SELECT b FROM Book b WHERE LOWER(b.title) LIKE %:title% AND LOWER(b.author) LIKE %:author% AND LOWER(b.category) LIKE %:category% AND LOWER(b.language) LIKE %:language% AND LOWER(b.edition) LIKE %:edition%")

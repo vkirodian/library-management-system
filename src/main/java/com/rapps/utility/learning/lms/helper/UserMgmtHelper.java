@@ -11,8 +11,8 @@ import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
 import com.rapps.utility.learning.lms.global.LmsConstants;
+import com.rapps.utility.learning.lms.model.UserModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
-import com.rapps.utility.learning.lms.persistence.bean.User;
 import com.rapps.utility.learning.lms.persistence.service.SessionService;
 import com.rapps.utility.learning.lms.persistence.service.UserService;
 
@@ -35,12 +35,12 @@ public class UserMgmtHelper extends BaseHelper {
 	AuthenticationMgmtHelper authenticationMgmtHelper;
 
 	/**
-	 * Get User details.
+	 * Get Logged-in User details.
 	 * 
 	 * @return User
 	 * @throws LmsException
 	 */
-	public User getUserDetails() throws LmsException {
+	public UserModel getUserDetails() throws LmsException {
 		String sessionId = super.getSessionId();
 		Session session = sessionService.getSession(sessionId);
 		String userId = session.getUserId();
@@ -50,10 +50,12 @@ public class UserMgmtHelper extends BaseHelper {
 	/**
 	 * Returns list of users in the system.
 	 * 
+	 * @param filter
+	 *            User Filter
 	 * @return List of User
 	 */
-	public List<User> getUsers() {
-		return userService.getUsers();
+	public List<UserModel> getUsers(UserModel filter) {
+		return userService.getUsers(filter);
 	}
 
 	/**
@@ -64,12 +66,12 @@ public class UserMgmtHelper extends BaseHelper {
 	 * @return Updated User
 	 * @throws LmsException
 	 */
-	public User updateUser(User user) throws LmsException {
-		User dbUser = userService.getUserById(user.getUserId());
-		User loggedInUser = getUserDetails();
+	public UserModel updateUser(UserModel user) throws LmsException {
+		UserModel dbUser = userService.getUserById(user.getUserId());
+		UserModel loggedInUser = getUserDetails();
 
 		if (loggedInUser.getUserRole() != UserRoleEnum.SUPER_ADMIN) {
-			//Non admin user cannot update other users.
+			// Non admin user cannot update other users.
 			if (!user.getUserId().equals(loggedInUser.getUserId())) {
 				throw new LmsException(ErrorType.FAILURE, MessagesEnum.CANNOT_UPDATE_USER, loggedInUser.getLoginId(),
 						"User Details", dbUser.getLoginId());
@@ -100,6 +102,63 @@ public class UserMgmtHelper extends BaseHelper {
 			user.setPasswordExpiryTms(dbUser.getPasswordExpiryTms());
 		}
 
+		return userService.updateUser(user);
+	}
+
+	/**
+	 * Add User.
+	 * 
+	 * @param user
+	 *            User
+	 * @return Added User
+	 * @throws LmsException
+	 *             If mandatory field missing
+	 */
+	public UserModel addUser(UserModel user) throws LmsException {
+		if (StringUtils.isEmpty(user.getLoginId())) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "Login ID", "User");
+		}
+		if (StringUtils.isEmpty(user.getPassword())) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "Password", "User");
+		}
+		if (user.getUserRole() == null) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "User Role", "User");
+		}
 		return userService.saveUser(user);
+	}
+
+	/**
+	 * Delete User.
+	 * 
+	 * @param uid
+	 *            User Id
+	 * @throws LmsException
+	 *             If User not found
+	 */
+	public void deleteUser(String uid) throws LmsException {
+		if (StringUtils.isEmpty(uid)) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "ID", "Book");
+		}
+		UserModel loggedInUser = getUserDetails();
+		if (loggedInUser.getUserId().equals(uid)) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.SELF_DELETION_NOT_ALLOWED);
+		}
+		userService.deleteUser(uid);
+	}
+
+	/**
+	 * Get User by ID.
+	 * 
+	 * @param uid
+	 *            User ID
+	 * @return User
+	 * @throws LmsException
+	 *             If User not found
+	 */
+	public UserModel getUser(String uid) throws LmsException {
+		if (StringUtils.isEmpty(uid)) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "ID", "User");
+		}
+		return userService.getUserById(uid);
 	}
 }

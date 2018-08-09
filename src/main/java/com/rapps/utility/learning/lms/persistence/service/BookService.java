@@ -85,6 +85,7 @@ public class BookService extends BaseService<Book> {
 	 * @throws LmsException
 	 *             Book not found
 	 */
+	@Transactional
 	public void deleteBook(String uid) throws LmsException {
 		super.deleteById(uid);
 	}
@@ -97,6 +98,7 @@ public class BookService extends BaseService<Book> {
 	 * @return Updated Book
 	 * @throws LmsException
 	 */
+	@Transactional
 	public BookModel updateBook(BookModel book) throws LmsException {
 		getBookById(book.getBookId());
 		return Converter.convertObject(bookRepository.save(Converter.convertObject(book, Book.class)), BookModel.class);

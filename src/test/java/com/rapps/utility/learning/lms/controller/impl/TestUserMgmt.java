@@ -8,7 +8,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.helper.UserMgmtHelper;
-import com.rapps.utility.learning.lms.persistence.bean.User;
+import com.rapps.utility.learning.lms.model.UserModel;
 
 import junit.framework.TestCase;
 
@@ -28,12 +28,27 @@ public class TestUserMgmt extends TestCase {
 
 	@Test
 	public void testGetUsers() throws LmsException {
-		mgmt.getUsers();
+		mgmt.getUsers(new UserModel());
 	}
 
 	@Test
 	public void testUpdateUser() throws LmsException {
-		mgmt.updateUser(new User());
+		mgmt.updateUser(new UserModel());
+	}
+	
+	@Test
+	public void testGetUser() throws LmsException {
+		mgmt.getUser("id");
+	}
+	
+	@Test
+	public void testAddUser() throws LmsException {
+		mgmt.addUser(new UserModel());
+	}
+	
+	@Test
+	public void testDeleteUser() throws LmsException {
+		mgmt.deleteUser("u1");
 	}
 
 }

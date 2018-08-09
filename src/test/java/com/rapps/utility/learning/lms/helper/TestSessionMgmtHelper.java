@@ -10,8 +10,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
+import com.rapps.utility.learning.lms.model.UserModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
-import com.rapps.utility.learning.lms.persistence.bean.User;
 import com.rapps.utility.learning.lms.persistence.service.SessionService;
 import com.rapps.utility.learning.lms.persistence.service.UserService;
 
@@ -40,7 +40,7 @@ public class TestSessionMgmtHelper extends TestCase {
 		Session s = new Session();
 		s.setLastAccessTime(System.currentTimeMillis());
 		s.setUserId("u1");
-		User u = new User();
+		UserModel u = new UserModel();
 		u.setUserId("u1");
 		u.setUserRole(UserRoleEnum.SUPER_ADMIN);
 		when(userService.getUserById("u1")).thenReturn(u);

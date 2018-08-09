@@ -1,19 +1,23 @@
 package com.rapps.utility.learning.lms.persistence.service;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.rapps.utility.learning.lms.enums.MessagesEnum;
+import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
+import com.rapps.utility.learning.lms.model.UserModel;
 import com.rapps.utility.learning.lms.persistence.bean.User;
 import com.rapps.utility.learning.lms.persistence.repository.UserRepository;
 
@@ -24,7 +28,7 @@ import com.rapps.utility.learning.lms.persistence.repository.UserRepository;
  *
  */
 @Service
-public class UserService {
+public class UserService extends BaseService<User> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
@@ -34,10 +38,15 @@ public class UserService {
 	/**
 	 * Gets list of all users in the system.
 	 * 
+	 * @param filter
+	 *            User Filter
 	 * @return List of User
 	 */
-	public List<User> getUsers() {
-		return userRepository.findAll();
+	public List<UserModel> getUsers(UserModel filter) {
+		String loginId = filter.getLoginId() == null ? "%" : filter.getLoginId().toLowerCase();
+		String emailId = filter.getEmailId() == null ? "%" : filter.getEmailId().toLowerCase();
+		List<UserRoleEnum> role = filter.getUserRole() != null ? Arrays.asList(filter.getUserRole()) : UserRoleEnum.getAllRoles();
+		return Converter.convertList(userRepository.findUsersByFilter(loginId, emailId, role), UserModel.class);
 	}
 
 	/**
@@ -49,13 +58,13 @@ public class UserService {
 	 * @throws LmsException
 	 *             If user not found
 	 */
-	public User getUserByLoginId(String loginId) throws LmsException {
+	public UserModel getUserByLoginId(String loginId) throws LmsException {
 		User user = userRepository.findByLoginId(loginId);
 		if (user == null) {
 			LOG.error("User not found");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.USER_NOT_FOUND);
 		}
-		return user;
+		return Converter.convertObject(user, UserModel.class);
 	}
 
 	/**
@@ -68,14 +77,9 @@ public class UserService {
 	 *             if User not found
 	 */
 	@Cacheable(value = "user", key = "#userId")
-	public User getUserById(String userId) throws LmsException {
-		LOG.debug("CALLED METHOD GET USER BY ID {}", userId);
-		Optional<User> users = userRepository.findById(userId);
-		if (users.isPresent()) {
-			return users.get();
-		} else {
-			throw new LmsException(ErrorType.FAILURE, MessagesEnum.USER_NOT_FOUND);
-		}
+	public UserModel getUserById(String userId) throws LmsException {
+		LOG.debug("Not in Cache");
+		return Converter.convertObject(super.findById(userId), UserModel.class);
 	}
 
 	/**
@@ -87,7 +91,36 @@ public class UserService {
 	 */
 	@Transactional
 	@CachePut(value = "user", key = "#user.userId")
-	public User saveUser(User user) {
-		return userRepository.save(user);
+	public UserModel saveUser(UserModel user) {
+		user.setUserId(UUID.randomUUID().toString());
+		user.setPasswordExpiryTms(System.currentTimeMillis());
+		return Converter.convertObject(userRepository.save(Converter.convertObject(user, User.class)), UserModel.class);
+	}
+
+	/**
+	 * Update user.
+	 * 
+	 * @param user
+	 *            User
+	 * @return Updated user
+	 */
+	@Transactional
+	@CachePut(value = "user", key = "#user.userId")
+	public UserModel updateUser(UserModel user) {
+		return Converter.convertObject(userRepository.save(Converter.convertObject(user, User.class)), UserModel.class);
+	}
+
+	/**
+	 * Delete user
+	 * 
+	 * @param uid
+	 *            User Id
+	 * @throws LmsException
+	 *             If User not found
+	 */
+	@Transactional
+	@CacheEvict(value = "user")
+	public void deleteUser(String uid) throws LmsException {
+		super.deleteById(uid);
 	}
 }
