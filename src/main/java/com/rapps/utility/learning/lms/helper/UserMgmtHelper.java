@@ -85,7 +85,7 @@ public class UserMgmtHelper extends BaseHelper {
 		}
 
 		// Login Id should not be updated
-		if (!dbUser.getLoginId().equals(user.getLoginId())) {
+		if (user.getLoginId() != null && !dbUser.getLoginId().equals(user.getLoginId())) {
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.CANNOT_UPDATE_LOGINID);
 		}
 
@@ -100,6 +100,6 @@ public class UserMgmtHelper extends BaseHelper {
 			user.setPasswordExpiryTms(dbUser.getPasswordExpiryTms());
 		}
 
-		return userService.updateUser(user);
+		return userService.saveUser(user);
 	}
 }

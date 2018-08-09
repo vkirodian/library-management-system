@@ -60,6 +60,8 @@ public class TestUserMgmtHelper extends TestCase {
 	public void testGetUsers() {
 		List<User> users = Arrays.asList(new User(), new User());
 		when(userService.getUsers()).thenReturn(users);
+		List<User> accUsers = helper.getUsers();
+		assertEquals("", users, accUsers);
 	}
 
 	@Test(expected = LmsException.class)
@@ -137,7 +139,7 @@ public class TestUserMgmtHelper extends TestCase {
 
 		getSession();
 		when(userService.getUserById("lg1")).thenReturn(loggedInUser);
-		when(userService.updateUser(methodInput)).thenReturn(methodInput);
+		when(userService.saveUser(methodInput)).thenReturn(methodInput);
 
 		User actual = helper.updateUser(methodInput);
 		assertEquals("", actual.getEmailId(), "newemail.lms.com");
@@ -159,7 +161,7 @@ public class TestUserMgmtHelper extends TestCase {
 
 		getSession();
 		when(userService.getUserById("lg1")).thenReturn(loggedInUser);
-		when(userService.updateUser(methodInput)).thenReturn(methodInput);
+		when(userService.saveUser(methodInput)).thenReturn(methodInput);
 
 		User actual = helper.updateUser(methodInput);
 		assertEquals("", actual.getEmailId(), "newemail.lms.com");
@@ -171,7 +173,6 @@ public class TestUserMgmtHelper extends TestCase {
 	public void testUpdateUser_AdminUserSuccess() throws LmsException {
 		User methodInput = new User();
 		methodInput.setUserId("u1");
-		methodInput.setLoginId("logged");
 		methodInput.setEmailId("newemail.lms.com");
 		methodInput.setUserRole(UserRoleEnum.USERS);
 
@@ -183,7 +184,7 @@ public class TestUserMgmtHelper extends TestCase {
 		getSession();
 		when(userService.getUserById("u1")).thenReturn(methodInput);
 		when(userService.getUserById("lg1")).thenReturn(loggedInUser);
-		when(userService.updateUser(methodInput)).thenReturn(methodInput);
+		when(userService.saveUser(methodInput)).thenReturn(methodInput);
 
 		User actual = helper.updateUser(methodInput);
 		assertEquals("", actual.getEmailId(), "newemail.lms.com");

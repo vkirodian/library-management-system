@@ -46,6 +46,6 @@ public interface IUserMgmt {
 	 *             If user does not exist
 	 */
 
-	@PutMapping(value = "updateUser")
+	@PutMapping(value = "update")
 	User updateUser(User user) throws LmsException;
 }

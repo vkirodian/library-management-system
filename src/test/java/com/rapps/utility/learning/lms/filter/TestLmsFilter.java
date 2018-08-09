@@ -5,7 +5,6 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,11 +50,6 @@ public class TestLmsFilter extends TestCase {
 	ServletResponse response; 
 	@Mock
 	FilterChain chain;
-
-	//@Test
-	public void testDoFilter() throws IOException, ServletException {
-		filter.doFilter(request, response, chain);
-	}
 	
 	@Test(expected = IOException.class)
 	public void testVerifySessionAndAuthorize_SessionMissingInHeader() throws IOException {

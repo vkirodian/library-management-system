@@ -16,7 +16,6 @@ public class OutputStatus {
 	private String errorMsg;
 	private String errorReason;
 	private String errorReasonCode;
-	private String[] messageParams;
 
 	public LmsException.ErrorType getErrorType() {
 		return errorType;
@@ -49,13 +48,4 @@ public class OutputStatus {
 	public void setErrorReasonCode(String errorReasonCode) {
 		this.errorReasonCode = errorReasonCode;
 	}
-
-	public String[] getMessageParams() {
-		return messageParams;
-	}
-
-	public void setMessageParams(String[] messageParams) {
-		this.messageParams = messageParams;
-	}
-
 }

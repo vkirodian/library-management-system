@@ -20,8 +20,12 @@ public enum ApiAuthorizationEnum {
 	UPDATE_PASSWORD("/lms/authentication/updatePassword", UserRoleEnum.getAllRoles()),
 	USER_DETAILS("/lms/user/userDetails", UserRoleEnum.getAllRoles()),
 	USERS("/lms/user/users", Arrays.asList(UserRoleEnum.SUPER_ADMIN, UserRoleEnum.LIBRARIAN)),
-	GETBOOKBYID("/lms/book/books/", UserRoleEnum.getAllRoles()),
-	GETBOOKSBYFILTER("/lms/book/books", UserRoleEnum.getAllRoles()),
+	USER_UPDATE("/lms/user/update", UserRoleEnum.getAllRoles()),
+	BOOK_BY_ID("/lms/book/books/", UserRoleEnum.getAllRoles()),
+	BOOKS_BY_FILTER("/lms/book/books", UserRoleEnum.getAllRoles()),
+	BOOK_ADD("/lms/book/add", Arrays.asList(UserRoleEnum.LIBRARIAN)),
+	BOOK_DELETE("/lms/book/books/", Arrays.asList(UserRoleEnum.LIBRARIAN)),
+	BOOK_UPDATE("/lms/book/update", Arrays.asList(UserRoleEnum.LIBRARIAN)),
 	;
 
 	String api;

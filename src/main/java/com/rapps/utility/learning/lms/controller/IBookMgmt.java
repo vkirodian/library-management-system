@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.rapps.utility.learning.lms.exception.LmsException;
-import com.rapps.utility.learning.lms.model.BookFilter;
-import com.rapps.utility.learning.lms.persistence.bean.Book;
+import com.rapps.utility.learning.lms.model.BookModel;
 
 /**
  * Interface providing API' related to Book management.
@@ -25,13 +24,13 @@ public interface IBookMgmt {
 	 * Get a book for the given ID.
 	 * 
 	 * @param uid
-	 *            Book Uid
-	 * @return
+	 *            Book ID
+	 * @return Book
 	 * @throws LmsException
 	 *             Book not found
 	 */
 	@GetMapping(value = "books/{uid}")
-	Book getBook(String uid) throws LmsException;
+	BookModel getBook(String uid) throws LmsException;
 
 	/**
 	 * Get all books as per passed filter.
@@ -39,32 +38,38 @@ public interface IBookMgmt {
 	 * @return List of Books
 	 */
 	@GetMapping(value = "books")
-	List<Book> getBooks(BookFilter filter);
+	List<BookModel> getBooks(BookModel filter);
 
 	/**
 	 * Add a given book
 	 * 
 	 * @param book
 	 *            Book
+	 * @throws LmsException
+	 *             Mandatory field missing
 	 */
 	@PostMapping(value = "add")
-	void addBook(Book book);
+	BookModel addBook(BookModel book) throws LmsException;
 
 	/**
 	 * Delete a book for a given ID.
 	 * 
 	 * @param uid
-	 *            Book uid
+	 *            Book ID
+	 * @throws LmsException
+	 *             Book not found
 	 */
 	@DeleteMapping(value = "books/{uid}")
-	void deleteBook(String uid);
+	void deleteBook(String uid) throws LmsException;
 
 	/**
 	 * Update a given book details.
 	 * 
 	 * @param book
 	 *            Book
+	 * @throws LmsException
+	 *             Book not found
 	 */
 	@PutMapping(value = "update")
-	void updateBook(Book book);
+	BookModel updateBook(BookModel book) throws LmsException;
 }

@@ -1,16 +1,28 @@
 package com.rapps.utility.learning.lms.model;
 
 /**
+ * Model class for books
  * 
  * @author vkirodian
  *
  */
-public class BookFilter {
+public class BookModel {
 
+	private String bookId;
 	private String title;
 	private String author;
+	private String description;
+	private String edition;
 	private String category;
 	private String language;
+
+	public String getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(String bookId) {
+		this.bookId = bookId;
+	}
 
 	public String getTitle() {
 		return title;
@@ -26,6 +38,22 @@ public class BookFilter {
 
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getEdition() {
+		return edition;
+	}
+
+	public void setEdition(String edition) {
+		this.edition = edition;
 	}
 
 	public String getCategory() {

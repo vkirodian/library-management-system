@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rapps.utility.learning.lms.controller.IBookMgmt;
 import com.rapps.utility.learning.lms.exception.LmsException;
-import com.rapps.utility.learning.lms.model.BookFilter;
-import com.rapps.utility.learning.lms.persistence.bean.Book;
-import com.rapps.utility.learning.lms.persistence.service.BookService;
+import com.rapps.utility.learning.lms.helper.BookMgmtHelper;
+import com.rapps.utility.learning.lms.model.BookModel;
 
 /**
  * Implementation of book management related API'
@@ -23,28 +22,31 @@ import com.rapps.utility.learning.lms.persistence.service.BookService;
 public class BookMgmt implements IBookMgmt {
 
 	@Autowired
-	BookService service;
-	
+	BookMgmtHelper helper;
+
 	@Override
-	public Book getBook(@PathVariable("uid") String uid) throws LmsException {
-		return service.getBookById(uid);
+	public BookModel getBook(@PathVariable("uid") String uid) throws LmsException {
+		return helper.getBookById(uid);
 	}
 
 	@Override
-	public List<Book> getBooks(BookFilter filter) {
-		return service.getBooksByFilter(filter);
+	public List<BookModel> getBooks(BookModel filter) {
+		return helper.getBooksByFilter(filter);
 	}
 
 	@Override
-	public void addBook(@RequestBody Book book) {
+	public BookModel addBook(@RequestBody BookModel book) throws LmsException {
+		return helper.saveBook(book);
 	}
 
 	@Override
-	public void deleteBook(@PathVariable("uid") String uid) {
+	public void deleteBook(@PathVariable("uid") String uid) throws LmsException {
+		helper.deleteBook(uid);
 	}
 
 	@Override
-	public void updateBook(@RequestBody Book book) {
+	public BookModel updateBook(@RequestBody BookModel book) throws LmsException {
+		return helper.updateBook(book);
 	}
 
 }

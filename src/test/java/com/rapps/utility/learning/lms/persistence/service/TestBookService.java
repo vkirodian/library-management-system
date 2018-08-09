@@ -1,5 +1,7 @@
 package com.rapps.utility.learning.lms.persistence.service;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -11,9 +13,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import com.rapps.utility.learning.lms.exception.LmsException;
-import com.rapps.utility.learning.lms.model.BookFilter;
+import com.rapps.utility.learning.lms.model.BookModel;
 import com.rapps.utility.learning.lms.persistence.bean.Book;
 import com.rapps.utility.learning.lms.persistence.repository.BookRepository;
 
@@ -38,10 +41,11 @@ public class TestBookService extends TestCase {
 	@Test
 	public void testGetBookById_Success() throws LmsException {
 		Book b = new Book();
+		b.setTitle("My First Book");
 		Optional<Book> o = Optional.ofNullable(b);
 		when(bookRepository.findById("b1")).thenReturn(o);
-		Book accb = service.getBookById("b1");
-		assertEquals("", b, accb);
+		BookModel accb = service.getBookById("b1");
+		assertEquals("", b.getTitle(), accb.getTitle());
 	}
 
 	@Test
@@ -51,27 +55,73 @@ public class TestBookService extends TestCase {
 
 	@Test
 	public void testSaveBook() {
-		service.saveBook(new Book());
+		BookModel b = new BookModel();
+		b.setTitle("My First Book");
+		b.setAuthor("Author");
+		Book book = Converter.convertObject(b, Book.class);
+		when(bookRepository.save(any(Book.class))).thenReturn(book);
+		service.saveBook(b);
 	}
 
 	@Test
 	public void testGetBooksByFilter() {
-		BookFilter bf1 = new BookFilter();
-		bf1.setAuthor("author");
-		bf1.setCategory("category");
-		bf1.setLanguage("language");
-		bf1.setTitle("title");
-		List<Book> lb1 = new ArrayList<>();
-		lb1.add(new Book());
-		when(bookRepository.findBooksByFilter("title", "author", "category", "language")).thenReturn(lb1);
-		List<Book> acBl1 = service.getBooksByFilter(bf1);
-		BookFilter bf2 = new BookFilter();
-		List<Book> lb2 = new ArrayList<>();
-		lb2.add(new Book());
-		when(bookRepository.findBooksByFilter("%", "%", "%", "%")).thenReturn(lb2);
-		List<Book> acBl2 = service.getBooksByFilter(bf2);
+		BookModel inputBookModel1 = new BookModel();
+		inputBookModel1.setAuthor("author");
+		inputBookModel1.setCategory("category");
+		inputBookModel1.setLanguage("language");
+		inputBookModel1.setTitle("title");
+		inputBookModel1.setEdition("edition");
+		Book b1 = new Book();
+		b1.setTitle("Title 1");
+		List<Book> outputBook1 = new ArrayList<>();
+		outputBook1.add(b1);
+		when(bookRepository.findBooksByFilter("title", "author", "category", "language", "edition"))
+				.thenReturn(outputBook1);
+		List<BookModel> acBl1 = service.getBooksByFilter(inputBookModel1);
 
-		assertEquals("", lb1, acBl1);
-		assertEquals("", lb2, acBl2);
+		BookModel inputBookModel2 = new BookModel();
+		Book b2 = new Book();
+		b2.setTitle("Title 2");
+		List<Book> outputBook2 = new ArrayList<>();
+		outputBook2.add(b2);
+		when(bookRepository.findBooksByFilter("%", "%", "%", "%", "%")).thenReturn(outputBook2);
+		List<BookModel> acBl2 = service.getBooksByFilter(inputBookModel2);
+
+		assertEquals("", "Title 1", acBl1.get(0).getTitle());
+		assertEquals("", "Title 2", acBl2.get(0).getTitle());
+	}
+
+	@Test
+	public void testUpdateBook() throws LmsException {
+		BookModel inputBookModel = new BookModel();
+		inputBookModel.setAuthor("author");
+		inputBookModel.setCategory("category");
+		inputBookModel.setLanguage("language");
+		inputBookModel.setTitle("title");
+		inputBookModel.setEdition("edition");
+		inputBookModel.setBookId("b1");
+
+		Book b = new Book();
+		b.setTitle("NMew Title");
+
+		Book dbBook = new Book();
+		dbBook.setTitle("My First Book");
+		Optional<Book> o = Optional.ofNullable(b);
+		when(bookRepository.findById("b1")).thenReturn(o);
+
+		when(bookRepository.save(any(Book.class))).thenReturn(b);
+		BookModel acc = service.updateBook(inputBookModel);
+		assertEquals("", "NMew Title", acc.getTitle());
+	}
+
+	@Test
+	public void testDeleteBook() throws LmsException {
+		service.deleteBook("");
+	}
+
+	@Test(expected = LmsException.class)
+	public void testDeleteBook_ItemNotFound() throws LmsException {
+		doThrow(new EmptyResultDataAccessException(1)).when(bookRepository).deleteById("id");
+		service.deleteBook("id");
 	}
 }
