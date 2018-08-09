@@ -79,20 +79,6 @@ public class UserService {
 	}
 
 	/**
-	 * Update User.
-	 * 
-	 * @param user
-	 *            User
-	 * @return Updated User
-	 * @throws LmsException
-	 *             If user not found
-	 */
-	@CachePut(value = "user", key = "#user.userId")
-	public User updateUser(User user) {
-		return saveUser(user);
-	}
-
-	/**
 	 * Save user.
 	 * 
 	 * @param user
@@ -100,6 +86,7 @@ public class UserService {
 	 * @return Saved user
 	 */
 	@Transactional
+	@CachePut(value = "user", key = "#user.userId")
 	public User saveUser(User user) {
 		return userRepository.save(user);
 	}

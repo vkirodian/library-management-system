@@ -24,7 +24,7 @@ public interface BookRepository extends BaseRepository<Book> {
 	 *            Author
 	 * @return List of Books
 	 */
-	@Query("SELECT b FROM Book b WHERE LOWER(b.title) LIKE %:title% AND LOWER(b.author) LIKE %:author% AND LOWER(b.category) LIKE %:category% AND LOWER(language) LIKE %:language%")
+	@Query("SELECT b FROM Book b WHERE LOWER(b.title) LIKE %:title% AND LOWER(b.author) LIKE %:author% AND LOWER(b.category) LIKE %:category% AND LOWER(b.language) LIKE %:language% AND LOWER(b.edition) LIKE %:edition%")
 	List<Book> findBooksByFilter(@Param("title") String title, @Param("author") String author,
-			@Param("category") String category, @Param("language") String language);
+			@Param("category") String category, @Param("language") String language, @Param("edition") String edition);
 }

@@ -50,6 +50,7 @@ public class LmsFilter implements Filter {
 			"/lms/authentication/resetPassword");
 
 	private static String jsonPattern = "(?i)(\"password\":)(.+?)(\")";
+	private static final String SKIP_AUTH = System.getenv("SKIP_AUTH");
 
 	@Autowired
 	SessionMgmtHelper sessionMgmtHelper;
@@ -70,7 +71,9 @@ public class LmsFilter implements Filter {
 			LOG.debug("Post Body : \n{}", new String(bufferedRequest.getBuffer()));
 		}
 
-		if (!URL_SKIP_SESSION_VERIFICATION.contains(bufferedRequest.getRequestURI())) {
+		//TODO remove skip authorization once stable
+		final boolean performAuth = SKIP_AUTH != null ? !Boolean.parseBoolean(SKIP_AUTH) : true;
+		if (performAuth && !URL_SKIP_SESSION_VERIFICATION.contains(bufferedRequest.getRequestURI())) {
 			verifySessionAndAuthorize(bufferedRequest);
 		}
 

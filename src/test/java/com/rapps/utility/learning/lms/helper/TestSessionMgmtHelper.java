@@ -49,7 +49,7 @@ public class TestSessionMgmtHelper extends TestCase {
 	}
 
 	@Test
-	public void testUpdateLastAccessTime() throws LmsException {
+	public void testUpdateLastAccessTime() {
 		helper.updateLastAccessTime(new Session());
 	}
 

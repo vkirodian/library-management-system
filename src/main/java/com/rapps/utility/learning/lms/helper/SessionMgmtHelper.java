@@ -56,7 +56,7 @@ public class SessionMgmtHelper {
 	 * @throws LmsException
 	 *             If session not found
 	 */
-	public void updateLastAccessTime(Session session) throws LmsException {
+	public void updateLastAccessTime(Session session) {
 		session.setLastAccessTime(System.currentTimeMillis());
 		sessionService.saveSession(session);
 		SessionCache.addSessionToCache(session);

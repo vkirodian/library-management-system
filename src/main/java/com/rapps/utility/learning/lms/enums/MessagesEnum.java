@@ -15,6 +15,12 @@ public enum MessagesEnum implements IMessages {
 	INFO("Additional information"),
 	WARNING("Warning"),
 	
+	//Common Errors
+	INTERNAL_ERROR("Server error. Cause {0}"),
+	INPUT_PARAM_EMPTY("Input parameter {0} is mandatory for item of type {1}"),
+	ENTITY_TO_DELETE_NOT_FOUND("Unable to delete item with ID {0}, not found."),
+	ENTITY_WITH_ID_NOT_FOUND("Item with ID {0} not found."),
+	
 	//Authentication messages
 	LOGIN_FAILED("Incorrect credentials entered."),
 	PASSWORD_EXPIRED("Your password has expired, please reset it and login again"),
@@ -34,12 +40,7 @@ public enum MessagesEnum implements IMessages {
 	SESSION_MISSING("Session information is missing in the request or is invalid."),
 	SESSION_EXPIRED("User session expired."),
 	
-	//Book Service
-	BOOK_NOT_FOUND("Book with ID {0} not found"),
-
 	
-	//
-	INTERNAL_ERROR("Server error. Cause {0}"),
 	;
 
 	private String message;
