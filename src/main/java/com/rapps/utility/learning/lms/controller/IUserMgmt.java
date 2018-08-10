@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.rapps.utility.learning.lms.annotation.Authorization;
+import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.model.UserModel;
 
@@ -28,6 +30,7 @@ public interface IUserMgmt {
 	 *             If session is invalid or User not found
 	 */
 	@GetMapping(value = "userDetails")
+	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN, UserRoleEnum.LIBRARIAN, UserRoleEnum.USERS })
 	UserModel getUserDetails() throws LmsException;
 
 	/**
@@ -40,6 +43,7 @@ public interface IUserMgmt {
 	 *             If User not found
 	 */
 	@GetMapping(value = "users/{uid}")
+	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN, UserRoleEnum.LIBRARIAN })
 	UserModel getUser(String uid) throws LmsException;
 
 	/**
@@ -51,6 +55,7 @@ public interface IUserMgmt {
 	 * 
 	 */
 	@GetMapping(value = "users")
+	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN })
 	List<UserModel> getUsers(UserModel filter);
 
 	/**
@@ -63,6 +68,7 @@ public interface IUserMgmt {
 	 *             If mandatory fields missing
 	 */
 	@PostMapping(value = "add")
+	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN })
 	UserModel addUser(UserModel user) throws LmsException;
 
 	/**
@@ -74,6 +80,7 @@ public interface IUserMgmt {
 	 *             If User not found
 	 */
 	@DeleteMapping(value = "users/{uid}")
+	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN })
 	void deleteUser(String uid) throws LmsException;
 
 	/**
@@ -87,5 +94,6 @@ public interface IUserMgmt {
 	 */
 
 	@PutMapping(value = "update")
+	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN, UserRoleEnum.LIBRARIAN, UserRoleEnum.USERS })
 	UserModel updateUser(UserModel user) throws LmsException;
 }

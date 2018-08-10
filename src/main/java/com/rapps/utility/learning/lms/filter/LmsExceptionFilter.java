@@ -39,12 +39,12 @@ public class LmsExceptionFilter extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(IOException.class)
-	protected ResponseEntity<Object> handleIoException(LmsException ex) {
+	protected ResponseEntity<Object> handleIoException(IOException ex) {
 		OutputStatus errorStatus = new OutputStatus();
-		errorStatus.setErrorMsg(ex.getErrorMessage());
-		errorStatus.setErrorReason(ex.getErrorReason());
-		errorStatus.setErrorReasonCode(ex.getErrorReasonCode());
-		errorStatus.setErrorType(ex.getErrorType());
+		errorStatus.setErrorMsg(ex.getMessage());
+		errorStatus.setErrorReason(ex.getMessage());
+		errorStatus.setErrorReasonCode(MessagesEnum.INTERNAL_ERROR.name());
+		errorStatus.setErrorType(LmsException.ErrorType.GLOBAL_FAILURE);
 		return new ResponseEntity<>(errorStatus, HttpStatus.UNAUTHORIZED);
 	}
 

@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.rapps.utility.learning.lms.annotation.Authorization;
+import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.model.LoginInputModel;
 import com.rapps.utility.learning.lms.model.ResetPasswordModel;
@@ -27,6 +29,7 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@PostMapping(value = "login")
+	@Authorization()
 	Session login(LoginInputModel login) throws LmsException;
 
 	/**
@@ -36,9 +39,9 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@PostMapping(value = "resetPassword")
+	@Authorization()
 	void resetPassword(ResetPasswordModel resetPassword) throws LmsException;
-	
-	
+
 	/**
 	 * API to update password.
 	 * 
@@ -46,8 +49,9 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@PostMapping(value = "updatePassword")
+	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN })
 	void updatePassword(ResetPasswordModel resetPassword) throws LmsException;
-	
+
 	/**
 	 * API for forgot password.
 	 * 
@@ -55,6 +59,7 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@PostMapping(value = "forgotPassword")
+	@Authorization()
 	void forgotPassword(LoginInputModel login) throws LmsException;
 
 	/**
@@ -63,5 +68,6 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@GetMapping(value = "logout")
+	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN, UserRoleEnum.LIBRARIAN, UserRoleEnum.USERS })
 	void logout() throws LmsException;
 }

@@ -1,5 +1,7 @@
 package com.rapps.utility.learning.lms.filter;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -28,13 +30,13 @@ public class TestLmsExceptionFilter extends TestCase {
 
 	@Test
 	public void testHandleIoException() {
-		LmsException ex = new LmsException(ErrorType.FAILURE, MessagesEnum.FAILURE);
+		IOException ex = new IOException("Some Error");
 		ResponseEntity<Object> actual = filter.handleIoException(ex);
 		OutputStatus status = (OutputStatus) actual.getBody();
-		assertEquals("", status.getErrorType(), ErrorType.FAILURE);
-		assertEquals("", status.getErrorMsg(), "Operation failed: Operation failed");
-		assertEquals("", status.getErrorReason(), "Operation failed");
-		assertEquals("", status.getErrorReasonCode(), "FAILURE");
+		assertEquals("", ErrorType.GLOBAL_FAILURE, status.getErrorType());
+		assertEquals("", "Some Error", status.getErrorMsg());
+		assertEquals("", "Some Error", status.getErrorReason());
+		assertEquals("", "INTERNAL_ERROR", status.getErrorReasonCode());
 	}
 
 	@Test

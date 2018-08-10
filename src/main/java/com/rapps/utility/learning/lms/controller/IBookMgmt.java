@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.rapps.utility.learning.lms.annotation.Authorization;
+import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.model.BookModel;
 
@@ -30,6 +32,7 @@ public interface IBookMgmt {
 	 *             Book not found
 	 */
 	@GetMapping(value = "books/{uid}")
+	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN, UserRoleEnum.LIBRARIAN, UserRoleEnum.USERS })
 	BookModel getBook(String uid) throws LmsException;
 
 	/**
@@ -38,6 +41,7 @@ public interface IBookMgmt {
 	 * @return List of Books
 	 */
 	@GetMapping(value = "books")
+	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN, UserRoleEnum.LIBRARIAN, UserRoleEnum.USERS })
 	List<BookModel> getBooks(BookModel filter);
 
 	/**
@@ -49,6 +53,7 @@ public interface IBookMgmt {
 	 *             Mandatory field missing
 	 */
 	@PostMapping(value = "add")
+	@Authorization(roles = { UserRoleEnum.LIBRARIAN })
 	BookModel addBook(BookModel book) throws LmsException;
 
 	/**
@@ -60,6 +65,7 @@ public interface IBookMgmt {
 	 *             Book not found
 	 */
 	@DeleteMapping(value = "books/{uid}")
+	@Authorization(roles = { UserRoleEnum.LIBRARIAN })
 	void deleteBook(String uid) throws LmsException;
 
 	/**
@@ -71,5 +77,6 @@ public interface IBookMgmt {
 	 *             Book not found
 	 */
 	@PutMapping(value = "update")
+	@Authorization(roles = { UserRoleEnum.LIBRARIAN })
 	BookModel updateBook(BookModel book) throws LmsException;
 }
