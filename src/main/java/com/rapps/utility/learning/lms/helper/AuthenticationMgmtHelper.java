@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.rapps.utility.learning.lms.enums.MessagesEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
@@ -76,13 +77,9 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	 */
 	public UserModel resetPassword(ResetPasswordModel resetPassword) throws LmsException {
 		UserModel user = userService.getUserByLoginId(resetPassword.getLoginId());
-		if (!user.getPassword().equals(resetPassword.getOldPassword())) {
-			LOG.error("Incorrect credentials entered");
-			throw new LmsException(ErrorType.FAILURE, MessagesEnum.LOGIN_FAILED);
-		}
-		validatePasswordStrength(user.getLoginId(), resetPassword.getOldPassword(), resetPassword.getNewPassword());
+		validatePasswordStrength(user.getLoginId(), user.getPassword(), resetPassword.getNewPassword());
 		user.setPassword(resetPassword.getNewPassword());
-		user.setPasswordExpiryTms(System.currentTimeMillis() + LmsConstants.PASSWORD_EXPIRY_TIME);
+		user.setPasswordExpiryTms(0);
 		return userService.saveUser(user);
 	}
 
@@ -94,6 +91,10 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	 * @throws LmsException
 	 */
 	public UserModel updatePassword(ResetPasswordModel resetPassword) throws LmsException {
+		if (StringUtils.isEmpty(resetPassword.getNewPassword())) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "New Password",
+					"Update Password");
+		}
 		String sessionId = super.getSessionId();
 		Session session = SessionCache.sessionExists(sessionId);
 		UserModel user = userService.getUserById(session.getUserId());
@@ -147,7 +148,20 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 		sessionService.deleteSession(session);
 	}
 
-	protected void validatePasswordStrength(String loginId, String oldPassword, String newPassword) throws LmsException {
+	/**
+	 * Validate password strength.
+	 * 
+	 * @param loginId
+	 *            Login ID
+	 * @param oldPassword
+	 *            Old Password
+	 * @param newPassword
+	 *            New Password
+	 * @throws LmsException
+	 *             If strength is week
+	 */
+	protected void validatePasswordStrength(String loginId, String oldPassword, String newPassword)
+			throws LmsException {
 		if (oldPassword.equals(newPassword)) {
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.OLD_NEW_PASWORD_SAME);
 		}

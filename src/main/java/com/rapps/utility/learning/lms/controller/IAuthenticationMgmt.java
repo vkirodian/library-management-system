@@ -39,7 +39,7 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@PostMapping(value = "resetPassword")
-	@Authorization()
+	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN })
 	void resetPassword(ResetPasswordModel resetPassword) throws LmsException;
 
 	/**

@@ -78,15 +78,6 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 	}
 
 	@Test(expected = LmsException.class)
-	public void testResetPassword_OldPasswordIncorrect() throws LmsException {
-		UserModel user = new UserModel();
-		user.setLoginId(LOGIN);
-		user.setPassword("admin");
-		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
-		helper.resetPassword(getResetPassword());
-	}
-
-	@Test(expected = LmsException.class)
 	public void testResetPassword_OldNewPasswordSame() throws LmsException {
 		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
@@ -170,6 +161,23 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		user.setPassword(PSWD);
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
 		helper.resetPassword(getResetPassword());
+	}
+	
+	@Test(expected = LmsException.class)
+	public void testUpdatePassword_NewPasswordEmpty() throws LmsException {
+		UserModel user = new UserModel();
+		user.setLoginId(LOGIN);
+		user.setPassword(PSWD);
+		user.setUserId("u1");
+		SessionCache.removeAllSessions();
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		SessionCache.addSessionToCache(getSession());
+		when(userService.getUserById("u1")).thenReturn(user);
+		ResetPasswordModel reset = getResetPassword();
+		reset.setLoginId(null);
+		reset.setOldPassword(null);
+		reset.setNewPassword(null);
+		helper.updatePassword(reset);
 	}
 
 	@Test
