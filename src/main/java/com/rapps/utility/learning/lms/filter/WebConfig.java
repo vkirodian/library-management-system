@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.rapps.utility.learning.lms.helper.AccessRoleMgmtHelper;
 import com.rapps.utility.learning.lms.helper.SessionMgmtHelper;
 
 /**
@@ -20,9 +21,12 @@ public class WebConfig implements WebMvcConfigurer {
 	@Autowired
 	SessionMgmtHelper sessionMgmtHelper;
 
+	@Autowired
+	AccessRoleMgmtHelper accessRoleHelper;
+
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new AuthorizationInterceptor(sessionMgmtHelper));
+		registry.addInterceptor(new AuthorizationInterceptor(sessionMgmtHelper, accessRoleHelper));
 	}
 
 }

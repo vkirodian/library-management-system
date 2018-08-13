@@ -2,7 +2,6 @@ package com.rapps.utility.learning.lms.exception;
 
 import java.text.MessageFormat;
 
-import com.rapps.utility.learning.lms.enums.IMessages;
 import com.rapps.utility.learning.lms.enums.MessagesEnum;
 
 /**
@@ -27,7 +26,7 @@ public class LmsException extends Exception {
 		this.errorReason = formatErrorReason(MessagesEnum.INTERNAL_ERROR.getMessage(), "Internal error");
 	}
 
-	public LmsException(ErrorType errorType, IMessages reasonCode, Object... objects) {
+	public LmsException(ErrorType errorType, MessagesEnum reasonCode, Object... objects) {
 		super(getErrorMessage(errorType, reasonCode, objects));
 		replaceQuotes(objects);
 		this.errorType = errorType;
@@ -37,7 +36,7 @@ public class LmsException extends Exception {
 		super.printStackTrace();
 	}
 
-	private static String getErrorMessage(final ErrorType errorType, final IMessages reasonCode,
+	private static String getErrorMessage(final ErrorType errorType, final MessagesEnum reasonCode,
 			final Object... objects) {
 		final String error = MessagesEnum.valueOf(errorType.name()).getMessage();
 		final String reason = formatErrorReason(reasonCode.getMessage(), objects);

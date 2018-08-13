@@ -1,15 +1,15 @@
 package com.rapps.utility.learning.lms.helper;
 
 import com.rapps.utility.learning.lms.annotation.Authorization;
-import com.rapps.utility.learning.lms.enums.UserRoleEnum;
+import com.rapps.utility.learning.lms.enums.AccessTypeEnum;
 
 public interface TestInterface {
 
 	void methodWithoutAuth();
 
-	@Authorization()
-	void methodWithAllowAllAuth();
+	@Authorization(accessType = AccessTypeEnum.AUTH_ALL, skipSession = true)
+	void methodSkipSession();
 
-	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN })
+	@Authorization(accessType = AccessTypeEnum.AUTH_ALL)
 	void methodWithAuth();
 }

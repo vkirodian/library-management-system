@@ -17,6 +17,12 @@ VALUES
 ('10000000-0000-0000-0000-000000000002', 'librarian', 'librarian', 0, 'librarian@lms.com', 1),
 ('10000000-0000-0000-0000-000000000003', 'user', 'user', 0, 'user@lms.com', 2);
 
+create table ACCESS_ROLE(
+	ACCESSROLEID varchar(36) primary key,
+    ACCESSTYPE int(2) not null,
+    ROLE int(2) not null    
+);
+
 create table SESSION (
 	SESSIONID varchar(36) primary key,
 	USERID varchar(36),
@@ -35,3 +41,39 @@ create table BOOK (
     CATEGORY varchar(50),
     LANGUAGE varchar(50)
 );
+
+create table INVENTORY (
+	BOOKID varchar(36) primary key,
+    TOTAL int(2) not null default 0,
+    ISSUED int(2) not null default 0,
+    REQUESTED int(2) not null default 0,
+    FOREIGN KEY (BOOKID) REFERENCES BOOK(BOOKID)
+);
+
+create table ISSUE (
+	ISSSUEID varchar(36) primary key,
+    BOOKID varchar(36) not null,
+    USERID varchar(36) not null,
+    ISSUEDATE bigint not null,
+    RETURNDATE bigint not null,
+    NOOFREISSUES int(2) not null default 0,
+    FINE int(4),
+    FOREIGN KEY (BOOKID) REFERENCES BOOK(BOOKID),
+    FOREIGN KEY (USERID) REFERENCES USER(USERID)
+);
+
+
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('1', '0', '0');
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('2', '0', '1');
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('3', '0', '2');
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('4', '1', '0');
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('5', '2', '0');
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('6', '2', '1');
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('7', '2', '2');
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('8', '3', '0');
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('9', '3', '1');
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('10', '4', '0');
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('11', '5', '0');
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('12', '5', '1');
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('13', '5', '2');
+INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES ('14', '6', '1');

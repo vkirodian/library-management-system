@@ -3,6 +3,7 @@ package com.rapps.utility.learning.lms.filter;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,10 +16,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.rapps.utility.learning.lms.enums.AccessTypeEnum;
 import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.global.LmsConstants;
 import com.rapps.utility.learning.lms.global.SessionCache;
+import com.rapps.utility.learning.lms.helper.AccessRoleMgmtHelper;
 import com.rapps.utility.learning.lms.helper.SessionMgmtHelper;
 import com.rapps.utility.learning.lms.helper.TestClassWithMultipleInterfaces;
 import com.rapps.utility.learning.lms.helper.TestClassWithOneInterfaces;
@@ -38,6 +41,8 @@ public class TestAuthorizationInterceptor extends TestCase {
 	@Mock
 	SessionMgmtHelper helper;
 	@Mock
+	AccessRoleMgmtHelper accessRoleHelper;
+	@Mock
 	HttpServletRequest request;
 	@Mock
 	HttpServletResponse response;
@@ -52,7 +57,7 @@ public class TestAuthorizationInterceptor extends TestCase {
 
 	@Test
 	public void testAuthorizationInterceptor() {
-		new AuthorizationInterceptor(helper);
+		new AuthorizationInterceptor(helper, accessRoleHelper);
 	}
 
 	@Test
@@ -83,7 +88,7 @@ public class TestAuthorizationInterceptor extends TestCase {
 		i.verifySessionAndAuthorize(request, handlerMethod);
 	}
 
-	//@Test
+	// @Test
 	public void testVerifySessionAndAuthorize_SecurityEx() throws Exception {
 		when(handlerMethod.getMethod()).thenReturn(TestClassWithOneInterfaces.class.getMethod("privateMethod"));
 		when(handlerMethod.getBean()).thenReturn(new TestClassWithOneInterfaces());
@@ -96,11 +101,11 @@ public class TestAuthorizationInterceptor extends TestCase {
 		when(handlerMethod.getBean()).thenReturn(new TestClassWithOneInterfaces());
 		i.verifySessionAndAuthorize(request, handlerMethod);
 	}
-
+	
 	@Test
-	public void testVerifySessionAndAuthorize_AllAllowedApi() throws Exception {
+	public void testVerifySessionAndAuthorize_methodSkipSession() throws Exception {
 		when(handlerMethod.getMethod())
-				.thenReturn(TestClassWithOneInterfaces.class.getMethod("methodWithAllowAllAuth"));
+				.thenReturn(TestClassWithOneInterfaces.class.getMethod("methodSkipSession"));
 		when(handlerMethod.getBean()).thenReturn(new TestClassWithOneInterfaces());
 		i.verifySessionAndAuthorize(request, handlerMethod);
 	}
@@ -151,6 +156,7 @@ public class TestAuthorizationInterceptor extends TestCase {
 		when(request.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
 		SessionCache.removeAllSessions();
 		SessionCache.addSessionToCache(getSession());
+		when(accessRoleHelper.getUserRolesForAccessType(AccessTypeEnum.AUTH_ALL)).thenReturn(Arrays.asList(UserRoleEnum.SUPER_ADMIN));
 		when(helper.getRoleForUserSession(getSession())).thenReturn(UserRoleEnum.SUPER_ADMIN);
 		i.verifySessionAndAuthorize(request, handlerMethod);
 	}

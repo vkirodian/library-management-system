@@ -14,11 +14,11 @@ public class TestClassWithOneInterfaces implements TestInterface {
 	}
 
 	@Override
-	public void methodWithAllowAllAuth() {
+	public void methodWithAuth() {
 	}
 
 	@Override
-	public void methodWithAuth() {
+	public void methodSkipSession() {
 	}
 
 }

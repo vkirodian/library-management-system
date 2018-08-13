@@ -2,6 +2,7 @@ package com.rapps.utility.learning.lms.persistence.bean;
 
 import org.junit.Test;
 
+import com.rapps.utility.learning.lms.enums.AccessTypeEnum;
 import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 
 import junit.framework.TestCase;
@@ -44,6 +45,15 @@ public class TestAllBeans extends TestCase {
 		assertEquals("Book bean failed", "edition", b.getEdition());
 		assertEquals("Book bean failed", "english", b.getLanguage());
 		assertEquals("Book bean failed", "book of eli", b.getTitle());
+	}
+
+	@Test
+	public void testAccessRoleBean() {
+		AccessRole a = new AccessRole();
+		a.setAccessType(AccessTypeEnum.AUTH_ALL);
+		a.setRole(UserRoleEnum.SUPER_ADMIN);
+		assertEquals("", AccessTypeEnum.AUTH_ALL, a.getAccessType());
+		assertEquals("", UserRoleEnum.SUPER_ADMIN, a.getRole());
 	}
 
 }

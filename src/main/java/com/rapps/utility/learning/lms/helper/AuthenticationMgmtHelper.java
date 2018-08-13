@@ -54,6 +54,9 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	 * @throws LmsException
 	 */
 	public Session authenticateUser(LoginInputModel loginInput) throws LmsException {
+		if (StringUtils.isEmpty(loginInput.getLoginId())) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "Login ID", "LOGIN");
+		}
 		UserModel user = userService.getUserByLoginId(loginInput.getLoginId());
 		if (!user.getPassword().equals(loginInput.getPassword())) {
 			LOG.error("Login failed incorrect credentials entered");
@@ -76,6 +79,9 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	 * @throws LmsException
 	 */
 	public UserModel resetPassword(ResetPasswordModel resetPassword) throws LmsException {
+		if (StringUtils.isEmpty(resetPassword.getLoginId())) {
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "Login ID", "LOGIN");
+		}
 		UserModel user = userService.getUserByLoginId(resetPassword.getLoginId());
 		validatePasswordStrength(user.getLoginId(), user.getPassword(), resetPassword.getNewPassword());
 		user.setPassword(resetPassword.getNewPassword());

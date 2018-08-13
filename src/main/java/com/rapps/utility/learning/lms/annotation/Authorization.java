@@ -5,7 +5,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 
-import com.rapps.utility.learning.lms.enums.UserRoleEnum;
+import com.rapps.utility.learning.lms.enums.AccessTypeEnum;
 
 /**
  * 
@@ -16,5 +16,7 @@ import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 @Retention(RUNTIME)
 public @interface Authorization {
 
-	UserRoleEnum[] roles() default {};
+	AccessTypeEnum accessType();
+
+	boolean skipSession() default false;
 }

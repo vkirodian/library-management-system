@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.rapps.utility.learning.lms.annotation.Authorization;
-import com.rapps.utility.learning.lms.enums.UserRoleEnum;
+import com.rapps.utility.learning.lms.enums.AccessTypeEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.model.LoginInputModel;
 import com.rapps.utility.learning.lms.model.ResetPasswordModel;
@@ -29,7 +29,7 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@PostMapping(value = "login")
-	@Authorization()
+	@Authorization(accessType = AccessTypeEnum.AUTH_ALL, skipSession = true)
 	Session login(LoginInputModel login) throws LmsException;
 
 	/**
@@ -39,7 +39,7 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@PostMapping(value = "resetPassword")
-	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN })
+	@Authorization(accessType = AccessTypeEnum.AUTH_ADMIN)
 	void resetPassword(ResetPasswordModel resetPassword) throws LmsException;
 
 	/**
@@ -49,7 +49,7 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@PostMapping(value = "updatePassword")
-	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN })
+	@Authorization(accessType = AccessTypeEnum.AUTH_ALL)
 	void updatePassword(ResetPasswordModel resetPassword) throws LmsException;
 
 	/**
@@ -59,7 +59,7 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@PostMapping(value = "forgotPassword")
-	@Authorization()
+	@Authorization(accessType = AccessTypeEnum.AUTH_ALL, skipSession = true)
 	void forgotPassword(LoginInputModel login) throws LmsException;
 
 	/**
@@ -68,6 +68,6 @@ public interface IAuthenticationMgmt {
 	 * @throws LmsException
 	 */
 	@GetMapping(value = "logout")
-	@Authorization(roles = { UserRoleEnum.SUPER_ADMIN, UserRoleEnum.LIBRARIAN, UserRoleEnum.USERS })
+	@Authorization(accessType = AccessTypeEnum.AUTH_ALL)
 	void logout() throws LmsException;
 }

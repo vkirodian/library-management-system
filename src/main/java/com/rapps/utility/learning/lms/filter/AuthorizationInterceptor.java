@@ -2,7 +2,6 @@ package com.rapps.utility.learning.lms.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +14,13 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.rapps.utility.learning.lms.annotation.Authorization;
+import com.rapps.utility.learning.lms.enums.AccessTypeEnum;
 import com.rapps.utility.learning.lms.enums.MessagesEnum;
 import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.global.LmsConstants;
 import com.rapps.utility.learning.lms.global.SessionCache;
+import com.rapps.utility.learning.lms.helper.AccessRoleMgmtHelper;
 import com.rapps.utility.learning.lms.helper.SessionMgmtHelper;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
 
@@ -36,10 +37,12 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 	private static final String SKIP_AUTH = System.getenv("SKIP_AUTH");
 
 	private SessionMgmtHelper sessionMgmtHelper;
+	private AccessRoleMgmtHelper accessRoleHelper;
 
-	public AuthorizationInterceptor(SessionMgmtHelper sessionMgmtHelper) {
+	public AuthorizationInterceptor(SessionMgmtHelper sessionMgmtHelper, AccessRoleMgmtHelper accessRoleHelper) {
 		super();
 		this.sessionMgmtHelper = sessionMgmtHelper;
+		this.accessRoleHelper = accessRoleHelper;
 	}
 
 	@Override
@@ -81,8 +84,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
 			Authorization auth = iMethod.getAnnotation(Authorization.class);
 			if (auth != null) {
-				List<UserRoleEnum> allowedRoles = Arrays.asList(auth.roles());
-				if (allowedRoles.isEmpty()) {
+				AccessTypeEnum accessType = auth.accessType();
+				if (auth.skipSession()) {
 					return;
 				}
 				String sessionId = request.getHeader(LmsConstants.SESSION_ID);
@@ -96,6 +99,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 					throw new IOException(MessagesEnum.SESSION_MISSING.getMessage());
 				}
 				UserRoleEnum userRole = sessionMgmtHelper.getRoleForUserSession(session);
+				List<UserRoleEnum> allowedRoles = accessRoleHelper.getUserRolesForAccessType(accessType);
 				if (!allowedRoles.contains(userRole)) {
 					LOG.error("User role {} is unauthorized to invoke API {}", userRole, request.getRequestURI());
 					throw new IOException("Unauthorized");
