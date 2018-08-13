@@ -1,8 +1,6 @@
 package com.rapps.utility.learning.lms.filter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -21,17 +19,10 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rapps.utility.learning.lms.enums.ApiAuthorizationEnum;
-import com.rapps.utility.learning.lms.enums.MessagesEnum;
-import com.rapps.utility.learning.lms.enums.UserRoleEnum;
-import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
-import com.rapps.utility.learning.lms.global.LmsConstants;
-import com.rapps.utility.learning.lms.global.SessionCache;
 import com.rapps.utility.learning.lms.helper.SessionMgmtHelper;
 import com.rapps.utility.learning.lms.model.GenericOutput;
 import com.rapps.utility.learning.lms.model.OutputStatus;
-import com.rapps.utility.learning.lms.persistence.bean.Session;
 
 /**
  * This filter is used to perform the following:<br>
@@ -46,11 +37,7 @@ import com.rapps.utility.learning.lms.persistence.bean.Session;
 public class LmsFilter implements Filter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LmsFilter.class);
-	private static final List<String> URL_SKIP_SESSION_VERIFICATION = Arrays.asList("/lms/authentication/login",
-			"/lms/authentication/resetPassword");
-
 	private static String jsonPattern = "(?i)(\"password\":)(.+?)(\")";
-	private static final String SKIP_AUTH = System.getenv("SKIP_AUTH");
 
 	@Autowired
 	SessionMgmtHelper sessionMgmtHelper;
@@ -71,12 +58,6 @@ public class LmsFilter implements Filter {
 			LOG.debug("Post Body : \n{}", new String(bufferedRequest.getBuffer()));
 		}
 
-		//TODO remove skip authorization once stable
-		final boolean performAuth = SKIP_AUTH != null ? !Boolean.parseBoolean(SKIP_AUTH) : true;
-		if (performAuth && !URL_SKIP_SESSION_VERIFICATION.contains(bufferedRequest.getRequestURI())) {
-			verifySessionAndAuthorize(bufferedRequest);
-		}
-
 		JsonResponseWrapper jsonResponseWrapper = new JsonResponseWrapper((HttpServletResponse) response);
 		chain.doFilter(bufferedRequest, jsonResponseWrapper);
 		String maskedResponse = maskPassword(jsonResponseWrapper.getResponseAsString());
@@ -85,32 +66,6 @@ public class LmsFilter implements Filter {
 
 	@Override
 	public void destroy() {
-	}
-
-	protected void verifySessionAndAuthorize(HttpServletRequest httpRequest) throws IOException {
-		String sessionId = httpRequest.getHeader(LmsConstants.SESSION_ID);
-		if (sessionId == null) {
-			LOG.error("Session information missing in request");
-			throw new IOException(MessagesEnum.SESSION_MISSING.getMessage());
-		} else {
-			Session session = SessionCache.sessionExists(sessionId);
-			if (session == null) {
-				LOG.error("Invalid session in request");
-				throw new IOException(MessagesEnum.SESSION_MISSING.getMessage());
-			}
-			try {
-				UserRoleEnum userRole = sessionMgmtHelper.getRoleForUserSession(session);
-				boolean isAuthorized = ApiAuthorizationEnum.doesRoleExistForApi(httpRequest.getRequestURI(), userRole);
-				if (!isAuthorized) {
-					LOG.error("User role {} is unauthorized to invoke API {}", userRole, httpRequest.getRequestURI());
-					throw new IOException("Unauthorized");
-				}
-				sessionMgmtHelper.updateLastAccessTime(session);
-			} catch (LmsException e) {
-				LOG.error("Unable to get User Role.");
-				throw new IOException(e.getErrorReason());
-			}
-		}
 	}
 
 	protected JsonNode getJsonNode(String response) throws IOException {

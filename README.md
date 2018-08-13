@@ -1,5 +1,5 @@
 # library-management-system
-A feature rich Library Management System with following features
+A feature rich Library Management System with following features currently available
 1. Authentication
 	* Features: Login & Logout(Session maintenance), Update/Reset/Forgot password.
 2. Authorization based on roles: Administrator, Librarian, Users
@@ -15,10 +15,13 @@ A feature rich Library Management System with following features
 * [x] Update Book
 
 * [ ] Issue Book
-* [ ] Issued book list for self/users
-* [ ] Users to whom book is issued to
+* [ ] Extend/Re-Issue Book
 * [ ] Add to waiting list for a book
 * [ ] Return Book
+
+* [ ] Issued book list for self/users
+* [ ] Users to whom book is issued to
+
 * [ ] Calculate fine
 * [ ] Pay Fine online
 * [ ] Clear Dues for offline payment
@@ -33,3 +36,5 @@ A feature rich Library Management System with following features
 * [x] Update User
 * [x] Delete User
 * [x] View User
+
+* [ ] Role Management

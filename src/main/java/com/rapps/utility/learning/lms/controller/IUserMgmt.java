@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.rapps.utility.learning.lms.annotation.Authorization;
+import com.rapps.utility.learning.lms.enums.AccessTypeEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.model.UserModel;
 
@@ -28,6 +30,7 @@ public interface IUserMgmt {
 	 *             If session is invalid or User not found
 	 */
 	@GetMapping(value = "userDetails")
+	@Authorization(accessType = AccessTypeEnum.USER_ALL)
 	UserModel getUserDetails() throws LmsException;
 
 	/**
@@ -40,6 +43,7 @@ public interface IUserMgmt {
 	 *             If User not found
 	 */
 	@GetMapping(value = "users/{uid}")
+	@Authorization(accessType = AccessTypeEnum.USER_VIEWONLY)
 	UserModel getUser(String uid) throws LmsException;
 
 	/**
@@ -51,6 +55,7 @@ public interface IUserMgmt {
 	 * 
 	 */
 	@GetMapping(value = "users")
+	@Authorization(accessType = AccessTypeEnum.USER_MGMT)
 	List<UserModel> getUsers(UserModel filter);
 
 	/**
@@ -63,6 +68,7 @@ public interface IUserMgmt {
 	 *             If mandatory fields missing
 	 */
 	@PostMapping(value = "add")
+	@Authorization(accessType = AccessTypeEnum.USER_MGMT)
 	UserModel addUser(UserModel user) throws LmsException;
 
 	/**
@@ -74,6 +80,7 @@ public interface IUserMgmt {
 	 *             If User not found
 	 */
 	@DeleteMapping(value = "users/{uid}")
+	@Authorization(accessType = AccessTypeEnum.USER_MGMT)
 	void deleteUser(String uid) throws LmsException;
 
 	/**
@@ -87,5 +94,6 @@ public interface IUserMgmt {
 	 */
 
 	@PutMapping(value = "update")
+	@Authorization(accessType = AccessTypeEnum.USER_VIEWONLY)
 	UserModel updateUser(UserModel user) throws LmsException;
 }

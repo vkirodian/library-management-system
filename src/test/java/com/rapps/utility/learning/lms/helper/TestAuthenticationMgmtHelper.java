@@ -58,6 +58,21 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 	}
 
 	@Test(expected = LmsException.class)
+	public void testAuthenticateUser_LoginIdEmpty() throws LmsException {
+		UserModel user = new UserModel();
+		user.setLoginId(LOGIN);
+		user.setPassword(PSWD);
+		user.setPasswordExpiryTms(System.currentTimeMillis() + EXTRA_TIME);
+		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
+		when(httpRequest.getRemoteAddr()).thenReturn("10.1.1.1");
+		when(sessionService.saveSession(any(Session.class))).thenReturn(getSession());
+		LoginInputModel m = getLoginInput();
+		m.setLoginId(null);
+		Session sactual = helper.authenticateUser(m);
+		assertEquals("", getSession(), sactual);
+	}
+
+	@Test(expected = LmsException.class)
 	public void testAuthenticateUser_IncorrectCreds() throws LmsException {
 		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
@@ -75,15 +90,6 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		user.setPasswordExpiryTms(System.currentTimeMillis() - EXTRA_TIME);
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
 		helper.authenticateUser(getLoginInput());
-	}
-
-	@Test(expected = LmsException.class)
-	public void testResetPassword_OldPasswordIncorrect() throws LmsException {
-		UserModel user = new UserModel();
-		user.setLoginId(LOGIN);
-		user.setPassword("admin");
-		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
-		helper.resetPassword(getResetPassword());
 	}
 
 	@Test(expected = LmsException.class)
@@ -162,6 +168,17 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		reset.setNewPassword("simplepassword");
 		helper.resetPassword(reset);
 	}
+	
+	@Test(expected = LmsException.class)
+	public void testResetPassword_LoginIdEmpty() throws LmsException {
+		UserModel user = new UserModel();
+		user.setLoginId(LOGIN);
+		user.setPassword(PSWD);
+		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
+		ResetPasswordModel m = getResetPassword();
+		m.setLoginId(null);
+		helper.resetPassword(m);
+	}
 
 	@Test
 	public void testResetPassword_Success() throws LmsException {
@@ -170,6 +187,23 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		user.setPassword(PSWD);
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
 		helper.resetPassword(getResetPassword());
+	}
+
+	@Test(expected = LmsException.class)
+	public void testUpdatePassword_NewPasswordEmpty() throws LmsException {
+		UserModel user = new UserModel();
+		user.setLoginId(LOGIN);
+		user.setPassword(PSWD);
+		user.setUserId("u1");
+		SessionCache.removeAllSessions();
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		SessionCache.addSessionToCache(getSession());
+		when(userService.getUserById("u1")).thenReturn(user);
+		ResetPasswordModel reset = getResetPassword();
+		reset.setLoginId(null);
+		reset.setOldPassword(null);
+		reset.setNewPassword(null);
+		helper.updatePassword(reset);
 	}
 
 	@Test

@@ -6,7 +6,7 @@ package com.rapps.utility.learning.lms.enums;
  * @author vkirodian
  *
  */
-public enum MessagesEnum implements IMessages {
+public enum MessagesEnum {
 	
 	GLOBAL_FAILURE("System error"),
 	PARTIAL_FAILURE("Operation is partially successful"),
@@ -30,6 +30,9 @@ public enum MessagesEnum implements IMessages {
 	PASSWORD_LENGTH_ERROR("Password should be minimum {0} character and maximum {1} characters long."),
 	PASSWORD_CHARS_ERROR("Password must contain atleast one character in big and small case, a number and a special character {0}"),
 	
+	//Access Role Service
+	NO_ACCESS_ROLE_FOR_TYPE("No Access Role was found for the provided Access Type {0}"),
+	
 	//User Service
 	USER_NOT_FOUND("User not found."),
 	CANNOT_UPDATE_LOGINID("Login ID cannot be updated for a user."),
@@ -49,12 +52,10 @@ public enum MessagesEnum implements IMessages {
 		this.message = message;
 	}
 
-	@Override
 	public String getName() {
 		return this.name();
 	}
 
-	@Override
 	public String getMessage() {
 		return message;
 	}
