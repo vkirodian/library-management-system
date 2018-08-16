@@ -7,6 +7,8 @@ A feature rich Library Management System with following features currently avail
 	* Features: View Self Profile, Add User, Delete User, Update User, View User details for a User ID, View list of Users for a given Filter.
 4. Book Management
 	* Features: Add Book, Delete Book, Update Book, View Book details for a Book ID, View list of Books for a given Filter.
+5. Book Issuing Management
+	* Features: Issue Book, Re-Issue Book, Return Book, Add to waiting list for a Book
 
 ## Feature List 
 * [x] View Book
@@ -14,10 +16,11 @@ A feature rich Library Management System with following features currently avail
 * [x] Delete Book
 * [x] Update Book
 
-* [ ] Issue Book
-* [ ] Extend/Re-Issue Book
-* [ ] Add to waiting list for a book
-* [ ] Return Book
+* [x] Issue Book
+* [x] Extend/Re-Issue Book
+* [x] Add to waiting list for a book
+* [ ] Send email to waiting user if book is assigned
+* [x] Return Book
 
 * [ ] Issued book list for self/users
 * [ ] Users to whom book is issued to

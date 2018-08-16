@@ -44,6 +44,13 @@ public enum MessagesEnum {
 	SESSION_MISSING("Session information is missing in the request or is invalid."),
 	SESSION_EXPIRED("User session expired."),
 
+	//Book Issue Service
+	BOOK_OUT_OF_STOCK("Requested book {0} is out of stock, please submit a wating queue request."),
+	BOOK_NOT_ISSUED("Requested book {0} is not currently issued by user {1}."),
+	BOOK_ALREADY_ISSUED("Request book {0} is already issued to user."),
+	REISSUE_THRESHOLD_REACHED("Re-Issue threshold reached, you have already reissued this book {0} times."),
+	LONG_WAITING_LIST("Cannot re-issue book {0}, there is a waiting list for it."),
+	CANNOT_ADD_TO_WAITING_BOOK_AVAILABLE("Cannot add request for waiting list, Book {0} is available."),
 	;
 
 	private String message;

@@ -27,7 +27,7 @@ import ch.qos.logback.core.status.ErrorStatus;
  */
 @ControllerAdvice
 public class LmsExceptionFilter extends ResponseEntityExceptionHandler {
-
+	
 	@ExceptionHandler(LmsException.class)
 	protected ResponseEntity<Object> handleLmsException(LmsException ex) {
 		OutputStatus errorStatus = new OutputStatus();

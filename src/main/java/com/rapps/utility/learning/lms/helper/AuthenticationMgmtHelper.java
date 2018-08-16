@@ -80,6 +80,7 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	 */
 	public UserModel resetPassword(ResetPasswordModel resetPassword) throws LmsException {
 		if (StringUtils.isEmpty(resetPassword.getLoginId())) {
+			LOG.error("Login ID is empty");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "Login ID", "LOGIN");
 		}
 		UserModel user = userService.getUserByLoginId(resetPassword.getLoginId());
@@ -98,6 +99,7 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	 */
 	public UserModel updatePassword(ResetPasswordModel resetPassword) throws LmsException {
 		if (StringUtils.isEmpty(resetPassword.getNewPassword())) {
+			LOG.error("New password is empty");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "New Password",
 					"Update Password");
 		}
@@ -169,19 +171,24 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 	protected void validatePasswordStrength(String loginId, String oldPassword, String newPassword)
 			throws LmsException {
 		if (oldPassword.equals(newPassword)) {
+			LOG.error("Old and New password same");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.OLD_NEW_PASWORD_SAME);
 		}
 		if (newPassword == null || newPassword.trim().isEmpty()) {
+			LOG.error("New password is empty");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.PASSWORD_NULL_EMPTY);
 		}
 		if (loginId.equals(newPassword)) {
+			LOG.error("Login ID and new password same");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.PASSWORD_USERNAME_SAME);
 		}
 		if (newPassword.length() < MIN_PASSWORD_LENGTH || newPassword.length() > MAX_PASSWORD_LENGTH) {
+			LOG.error("New password lenght not in required range");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.PASSWORD_LENGTH_ERROR, MIN_PASSWORD_LENGTH,
 					MAX_PASSWORD_LENGTH);
 		}
 		if (!newPassword.matches(PASS_REQUIRED_CHARS_REGEX)) {
+			LOG.error("New password regex failed");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.PASSWORD_CHARS_ERROR, SPECIAL_CHARS);
 		}
 	}

@@ -2,6 +2,8 @@ package com.rapps.utility.learning.lms.helper;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -11,6 +13,7 @@ import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
 import com.rapps.utility.learning.lms.global.LmsConstants;
+import com.rapps.utility.learning.lms.global.SessionCache;
 import com.rapps.utility.learning.lms.model.UserModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
 import com.rapps.utility.learning.lms.persistence.service.SessionService;
@@ -24,6 +27,8 @@ import com.rapps.utility.learning.lms.persistence.service.UserService;
  */
 @Component
 public class UserMgmtHelper extends BaseHelper {
+
+	private static final Logger LOG = LoggerFactory.getLogger(UserMgmtHelper.class);
 
 	@Autowired
 	SessionService sessionService;
@@ -42,7 +47,11 @@ public class UserMgmtHelper extends BaseHelper {
 	 */
 	public UserModel getUserDetails() throws LmsException {
 		String sessionId = super.getSessionId();
-		Session session = sessionService.getSession(sessionId);
+		Session session = SessionCache.sessionExists(sessionId);
+		if (session == null) {
+			LOG.error("Session does not exist");
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.SESSION_NOT_FOUND);
+		}
 		String userId = session.getUserId();
 		return userService.getUserById(userId);
 	}
@@ -73,12 +82,14 @@ public class UserMgmtHelper extends BaseHelper {
 		if (loggedInUser.getUserRole() != UserRoleEnum.SUPER_ADMIN) {
 			// Non admin user cannot update other users.
 			if (!user.getUserId().equals(loggedInUser.getUserId())) {
+				LOG.error("Non admin user cannot update other users");
 				throw new LmsException(ErrorType.FAILURE, MessagesEnum.CANNOT_UPDATE_USER, loggedInUser.getLoginId(),
 						"User Details", dbUser.getLoginId());
 			}
 
 			// User role can be updated by an admin user only.
 			if (user.getUserRole() != null) {
+				LOG.error("User role can be updated by an admin user only");
 				throw new LmsException(ErrorType.FAILURE, MessagesEnum.CANNOT_UPDATE_USER, loggedInUser.getLoginId(),
 						"User Role", dbUser.getLoginId());
 			} else {
@@ -88,6 +99,7 @@ public class UserMgmtHelper extends BaseHelper {
 
 		// Login Id should not be updated
 		if (user.getLoginId() != null && !dbUser.getLoginId().equals(user.getLoginId())) {
+			LOG.error("Login ID cannot be updated");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.CANNOT_UPDATE_LOGINID);
 		}
 
@@ -116,12 +128,15 @@ public class UserMgmtHelper extends BaseHelper {
 	 */
 	public UserModel addUser(UserModel user) throws LmsException {
 		if (StringUtils.isEmpty(user.getLoginId())) {
+			LOG.error("Login ID missing");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "Login ID", "User");
 		}
 		if (StringUtils.isEmpty(user.getPassword())) {
+			LOG.error("Password missing");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "Password", "User");
 		}
 		if (user.getUserRole() == null) {
+			LOG.error("User role missing");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "User Role", "User");
 		}
 		return userService.saveUser(user);
@@ -137,10 +152,12 @@ public class UserMgmtHelper extends BaseHelper {
 	 */
 	public void deleteUser(String uid) throws LmsException {
 		if (StringUtils.isEmpty(uid)) {
+			LOG.error("User ID missing");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "ID", "Book");
 		}
 		UserModel loggedInUser = getUserDetails();
 		if (loggedInUser.getUserId().equals(uid)) {
+			LOG.error("Self deletion not allowed");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.SELF_DELETION_NOT_ALLOWED);
 		}
 		userService.deleteUser(uid);
@@ -157,6 +174,7 @@ public class UserMgmtHelper extends BaseHelper {
 	 */
 	public UserModel getUser(String uid) throws LmsException {
 		if (StringUtils.isEmpty(uid)) {
+			LOG.error("User ID is empty");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "ID", "User");
 		}
 		return userService.getUserById(uid);

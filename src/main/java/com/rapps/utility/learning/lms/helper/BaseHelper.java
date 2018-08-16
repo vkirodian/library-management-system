@@ -29,6 +29,7 @@ public class BaseHelper {
 	 * 
 	 * @return Session Id
 	 * @throws LmsException
+	 *             If session missing in header
 	 */
 	protected String getSessionId() throws LmsException {
 		String sessionId = httpRequest.getHeader(LmsConstants.SESSION_ID);

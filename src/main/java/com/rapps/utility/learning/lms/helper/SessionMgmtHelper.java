@@ -1,5 +1,7 @@
 package com.rapps.utility.learning.lms.helper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,8 @@ import com.rapps.utility.learning.lms.persistence.service.UserService;
  */
 @Component
 public class SessionMgmtHelper {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(SessionMgmtHelper.class);
 
 	@Autowired
 	SessionService sessionService;
@@ -41,6 +45,7 @@ public class SessionMgmtHelper {
 	 */
 	public UserRoleEnum getRoleForUserSession(Session session) throws LmsException {
 		if (session.getLastAccessTime() + LmsConstants.INACTIVITY_TIMEOUT < System.currentTimeMillis()) {
+			LOG.error("Session expired");
 			SessionCache.removeSessionFromCache(session.getSessionId());
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.SESSION_EXPIRED);
 		}

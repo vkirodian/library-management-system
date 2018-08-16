@@ -17,6 +17,9 @@ public enum AccessTypeEnum {
 	
 	BOOK_VIEWONLY("Book View-Only Access"),		//5
 	BOOK_MGMT("Book Management Access"),		//6
+	
+	ISSUE_USERS("Issue Users"),					//7
+	ISSUE_ADMIN("Issue Admin")					//8
 	;
 	
 	private String message;

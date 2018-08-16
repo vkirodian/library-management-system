@@ -2,6 +2,8 @@ package com.rapps.utility.learning.lms.persistence.service;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ import com.rapps.utility.learning.lms.persistence.repository.AccessRoleRepositor
 @Service
 public class AccessRoleService extends BaseService<AccessRole> {
 
+	private static final Logger LOG = LoggerFactory.getLogger(AccessRoleService.class);
+
 	@Autowired
 	AccessRoleRepository accessRoleRepo;
 
@@ -39,6 +43,7 @@ public class AccessRoleService extends BaseService<AccessRole> {
 	public List<AccessRole> getAccessRolesForAccessType(AccessTypeEnum accessType) throws LmsException {
 		List<AccessRole> accessRoles = accessRoleRepo.findByAccessType(accessType);
 		if (CollectionUtils.isEmpty(accessRoles)) {
+			LOG.error("No Access role for access type");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.NO_ACCESS_ROLE_FOR_TYPE, accessType);
 		}
 		return accessRoles;

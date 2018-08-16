@@ -78,7 +78,6 @@ public class UserService extends BaseService<User> {
 	 */
 	@Cacheable(value = "user", key = "#userId")
 	public UserModel getUserById(String userId) throws LmsException {
-		LOG.debug("Not in Cache");
 		return Converter.convertObject(super.findById(userId), UserModel.class);
 	}
 

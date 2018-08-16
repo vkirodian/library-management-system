@@ -16,6 +16,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.global.LmsConstants;
+import com.rapps.utility.learning.lms.global.SessionCache;
 import com.rapps.utility.learning.lms.model.UserModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
 import com.rapps.utility.learning.lms.persistence.service.SessionService;
@@ -52,6 +53,8 @@ public class TestUserMgmtHelper extends TestCase {
 		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn("Session_id_1");
 		when(sessionService.getSession("Session_id_1")).thenReturn(s);
 		when(userService.getUserById("u1")).thenReturn(new UserModel());
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(s);
 		UserModel u = helper.getUserDetails();
 		assertNotNull("", u);
 	}
@@ -86,7 +89,9 @@ public class TestUserMgmtHelper extends TestCase {
 		loggedInUser.setUserRole(UserRoleEnum.LIBRARIAN);
 
 		when(userService.getUserById("u1")).thenReturn(methodInput);
-		getSession();
+		Session s = getSession();
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(s);
 		when(userService.getUserById("lg1")).thenReturn(loggedInUser);
 
 		helper.updateUser(methodInput);
@@ -104,7 +109,9 @@ public class TestUserMgmtHelper extends TestCase {
 		loggedInUser.setLoginId("logged");
 		loggedInUser.setUserRole(UserRoleEnum.LIBRARIAN);
 
-		getSession();
+		Session s = getSession();
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(s);
 		when(userService.getUserById("lg1")).thenReturn(loggedInUser);
 
 		helper.updateUser(methodInput);
@@ -121,7 +128,9 @@ public class TestUserMgmtHelper extends TestCase {
 		loggedInUser.setLoginId("logged");
 		loggedInUser.setUserRole(UserRoleEnum.LIBRARIAN);
 
-		getSession();
+		Session s = getSession();
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(s);
 		when(userService.getUserById("lg1")).thenReturn(loggedInUser);
 
 		helper.updateUser(methodInput);
@@ -139,9 +148,15 @@ public class TestUserMgmtHelper extends TestCase {
 		loggedInUser.setLoginId("logged");
 		loggedInUser.setUserRole(UserRoleEnum.LIBRARIAN);
 
-		getSession();
 		when(userService.getUserById("lg1")).thenReturn(loggedInUser);
 		when(userService.updateUser(methodInput)).thenReturn(methodInput);
+
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn("s1");
+		Session s = new Session();
+		s.setSessionId("s1");
+		s.setUserId("lg1");
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(s);
 
 		UserModel actual = helper.updateUser(methodInput);
 		assertEquals("", actual.getEmailId(), "newemail.lms.com");
@@ -161,10 +176,16 @@ public class TestUserMgmtHelper extends TestCase {
 		loggedInUser.setLoginId("logged");
 		loggedInUser.setUserRole(UserRoleEnum.LIBRARIAN);
 
-		getSession();
 		when(userService.getUserById("lg1")).thenReturn(loggedInUser);
 		when(userService.updateUser(methodInput)).thenReturn(methodInput);
 
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn("s1");
+		Session s = new Session();
+		s.setSessionId("s1");
+		s.setUserId("lg1");
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(s);
+		
 		UserModel actual = helper.updateUser(methodInput);
 		assertEquals("", actual.getEmailId(), "newemail.lms.com");
 		assertEquals("", actual.getPassword(), "newpassword");
@@ -183,11 +204,17 @@ public class TestUserMgmtHelper extends TestCase {
 		loggedInUser.setLoginId("logged");
 		loggedInUser.setUserRole(UserRoleEnum.SUPER_ADMIN);
 
-		getSession();
 		when(userService.getUserById("u1")).thenReturn(methodInput);
 		when(userService.getUserById("lg1")).thenReturn(loggedInUser);
 		when(userService.updateUser(methodInput)).thenReturn(methodInput);
 
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn("s1");
+		Session s = new Session();
+		s.setSessionId("s1");
+		s.setUserId("lg1");
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(s);
+		
 		UserModel actual = helper.updateUser(methodInput);
 		assertEquals("", actual.getEmailId(), "newemail.lms.com");
 		assertEquals("", actual.getUserRole(), UserRoleEnum.USERS);
@@ -243,44 +270,45 @@ public class TestUserMgmtHelper extends TestCase {
 		UserModel acc = helper.getUser("uid");
 		assertEquals("", acc, u);
 	}
-	
+
 	@Test(expected = LmsException.class)
 	public void testDeleteUser_IdNull() throws LmsException {
 		helper.deleteUser(null);
 	}
-	
+
 	@Test(expected = LmsException.class)
 	public void testDeleteUser_SelfDelete() throws LmsException {
 		Session s = new Session();
 		s.setSessionId("Session_id_1");
 		s.setUserId("u1");
-		
+
 		UserModel u = new UserModel();
 		u.setUserId("u1");
 		u.setLoginId("admin");
 		u.setPassword("AdmiN@123");
 		u.setUserRole(UserRoleEnum.SUPER_ADMIN);
-		
+
 		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn("Session_id_1");
 		when(sessionService.getSession("Session_id_1")).thenReturn(s);
 		when(userService.getUserById("u1")).thenReturn(u);
 		helper.deleteUser("u1");
 	}
-	
+
 	@Test
 	public void testDeleteUser_Success() throws LmsException {
 		Session s = new Session();
 		s.setSessionId("Session_id_1");
 		s.setUserId("u1");
-		
+
 		UserModel u = new UserModel();
 		u.setUserId("u1");
 		u.setLoginId("admin");
 		u.setPassword("AdmiN@123");
 		u.setUserRole(UserRoleEnum.SUPER_ADMIN);
-		
+
 		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn("Session_id_1");
-		when(sessionService.getSession("Session_id_1")).thenReturn(s);
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(s);
 		when(userService.getUserById("u1")).thenReturn(u);
 		helper.deleteUser("u2");
 	}
