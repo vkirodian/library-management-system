@@ -52,8 +52,44 @@ public class TestAllBeans extends TestCase {
 		AccessRole a = new AccessRole();
 		a.setAccessType(AccessTypeEnum.AUTH_ALL);
 		a.setRole(UserRoleEnum.SUPER_ADMIN);
+		a.setAccessRoleId("a1");
 		assertEquals("", AccessTypeEnum.AUTH_ALL, a.getAccessType());
 		assertEquals("", UserRoleEnum.SUPER_ADMIN, a.getRole());
+		assertEquals("", "a1", a.getAccessRoleId());
+	}
+
+	@Test
+	public void testInventoryBean() {
+		Inventory i = new Inventory();
+		i.setBookId("b1");
+		i.setIssued(2);
+		i.setRequested(1);
+		i.setTotal(2);
+		assertEquals("", "b1", i.getBookId());
+		assertEquals("", 2, i.getIssued());
+		assertEquals("", 1, i.getRequested());
+		assertEquals("", 2, i.getTotal());
+	}
+
+	@Test
+	public void testIssueBean() {
+		long time = System.currentTimeMillis();
+		Issue i = new Issue();
+		i.setBookId("b1");
+		i.setFine(10);
+		i.setIssueDate(time);
+		i.setIssueId("i1");
+		i.setNoOfReissues(1);
+		i.setReturnDate(time);
+		i.setUserId("u1");
+
+		assertEquals("", "b1", i.getBookId());
+		assertEquals("", 10, i.getFine());
+		assertEquals("", time, i.getIssueDate());
+		assertEquals("", "i1", i.getIssueId());
+		assertEquals("", 1, i.getNoOfReissues());
+		assertEquals("", time, i.getReturnDate());
+		assertEquals("", "u1", i.getUserId());
 	}
 
 }

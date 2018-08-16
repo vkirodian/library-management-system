@@ -86,6 +86,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 			if (auth != null) {
 				AccessTypeEnum accessType = auth.accessType();
 				if (auth.skipSession()) {
+					LOG.error("SKIP_AUTH flag is set, hence skipping session validatin and authorization");
 					return;
 				}
 				String sessionId = request.getHeader(LmsConstants.SESSION_ID);
