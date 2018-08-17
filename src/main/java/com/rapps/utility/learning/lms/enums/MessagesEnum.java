@@ -51,6 +51,7 @@ public enum MessagesEnum {
 	REISSUE_THRESHOLD_REACHED("Re-Issue threshold reached, you have already reissued this book {0} times."),
 	LONG_WAITING_LIST("Cannot re-issue book {0}, there is a waiting list for it."),
 	CANNOT_ADD_TO_WAITING_BOOK_AVAILABLE("Cannot add request for waiting list, Book {0} is available."),
+	BOOK_ALREADY_REQUESTED("Book {0} already requested by user."),
 	;
 
 	private String message;

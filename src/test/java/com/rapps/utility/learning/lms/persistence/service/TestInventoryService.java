@@ -40,4 +40,8 @@ public class TestInventoryService {
 		service.updateIssuedCount("", 1);
 	}
 
+	@Test
+	public void testUpdateRequestedCount() {
+		service.updateRequestedCount("", 1);
+	}
 }

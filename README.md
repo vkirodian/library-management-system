@@ -23,6 +23,7 @@ A feature rich Library Management System with following features currently avail
 * [x] Return Book
 
 * [ ] Issued book list for self/users
+* [ ] Historical record of issued books for self/users
 * [ ] Users to whom book is issued to
 
 * [ ] Calculate fine
