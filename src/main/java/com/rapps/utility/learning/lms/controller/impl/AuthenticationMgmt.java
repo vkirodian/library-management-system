@@ -39,7 +39,7 @@ public class AuthenticationMgmt implements IAuthenticationMgmt {
 	}
 
 	@Override
-	public void forgotPassword(LoginInputModel login) throws LmsException {
+	public void forgotPassword(@RequestBody LoginInputModel login) throws LmsException {
 		authenticationMgmthelper.forgotPassword(login);
 	}
 

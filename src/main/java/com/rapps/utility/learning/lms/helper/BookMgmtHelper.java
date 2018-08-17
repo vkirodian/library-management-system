@@ -22,7 +22,7 @@ import com.rapps.utility.learning.lms.persistence.service.BookService;
  */
 @Component
 public class BookMgmtHelper {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(BookMgmtHelper.class);
 
 	@Autowired
@@ -38,10 +38,7 @@ public class BookMgmtHelper {
 	 *             If book not found
 	 */
 	public BookModel getBookById(String uid) throws LmsException {
-		if (StringUtils.isEmpty(uid)) {
-			LOG.error("Book ID is empty");
-			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "ID", "Book");
-		}
+		validateBookId(uid);
 		return service.getBookById(uid);
 	}
 
@@ -66,14 +63,7 @@ public class BookMgmtHelper {
 	 *             If mandatory fields not found
 	 */
 	public BookModel saveBook(BookModel book) throws LmsException {
-		if (StringUtils.isEmpty(book.getTitle())) {
-			LOG.error("Title is empty");
-			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "Title", "Book");
-		}
-		if (StringUtils.isEmpty(book.getAuthor())) {
-			LOG.error("Author is empty");
-			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "Author", "Book");
-		}
+		validateBookDetails(book);
 		return service.saveBook(book);
 	}
 
@@ -85,10 +75,7 @@ public class BookMgmtHelper {
 	 * @throws LmsException
 	 */
 	public void deleteBook(String uid) throws LmsException {
-		if (StringUtils.isEmpty(uid)) {
-			LOG.error("Book ID is empty");
-			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "ID", "Book");
-		}
+		validateBookId(uid);
 		service.deleteBook(uid);
 	}
 
@@ -102,10 +89,19 @@ public class BookMgmtHelper {
 	 *             If Book not found
 	 */
 	public BookModel updateBook(BookModel book) throws LmsException {
-		if (StringUtils.isEmpty(book.getBookId())) {
+		validateBookId(book.getBookId());
+		validateBookDetails(book);
+		return service.updateBook(book);
+	}
+
+	private void validateBookId(String bookId) throws LmsException {
+		if (StringUtils.isEmpty(bookId)) {
 			LOG.error("Book ID is empty");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "ID", "Book");
 		}
+	}
+
+	private void validateBookDetails(BookModel book) throws LmsException {
 		if (StringUtils.isEmpty(book.getTitle())) {
 			LOG.error("Title is empty");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "Title", "Book");
@@ -114,6 +110,5 @@ public class BookMgmtHelper {
 			LOG.error("Author is empty");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "Author", "Book");
 		}
-		return service.updateBook(book);
 	}
 }

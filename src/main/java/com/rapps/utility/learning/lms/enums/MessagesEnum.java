@@ -17,6 +17,7 @@ public enum MessagesEnum {
 	
 	//Common Errors
 	INTERNAL_ERROR("Server error. Cause {0}"),
+	EMAIL_SENDING_ERROR("Error while sending email"),
 	INPUT_PARAM_EMPTY("Input parameter {0} is mandatory for item of type {1}"),
 	ENTITY_TO_DELETE_NOT_FOUND("Unable to delete item with ID {0}, not found."),
 	ENTITY_WITH_ID_NOT_FOUND("Item with ID {0} not found."),
@@ -29,6 +30,7 @@ public enum MessagesEnum {
 	PASSWORD_USERNAME_SAME("Password cannot be same as Login ID."),
 	PASSWORD_LENGTH_ERROR("Password should be minimum {0} character and maximum {1} characters long."),
 	PASSWORD_CHARS_ERROR("Password must contain atleast one character in big and small case, a number and a special character {0}"),
+	NON_ADMIN_RESET_PWD("Non Admin role user {0} cannot update password for other user {1}"),
 	
 	//Access Role Service
 	NO_ACCESS_ROLE_FOR_TYPE("No Access Role was found for the provided Access Type {0}"),

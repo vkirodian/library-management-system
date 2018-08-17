@@ -8,7 +8,6 @@ package com.rapps.utility.learning.lms.model;
 public class ResetPasswordModel {
 
 	private String loginId;
-	private String oldPassword;
 	private String newPassword;
 
 	public String getLoginId() {
@@ -17,14 +16,6 @@ public class ResetPasswordModel {
 
 	public void setLoginId(String loginId) {
 		this.loginId = loginId;
-	}
-
-	public String getOldPassword() {
-		return oldPassword;
-	}
-
-	public void setOldPassword(String oldPassword) {
-		this.oldPassword = oldPassword;
 	}
 
 	public String getNewPassword() {

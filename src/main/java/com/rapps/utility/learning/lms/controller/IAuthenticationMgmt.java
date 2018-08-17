@@ -33,7 +33,7 @@ public interface IAuthenticationMgmt {
 	Session login(LoginInputModel login) throws LmsException;
 
 	/**
-	 * API to reset password.
+	 * API to reset password used by an Admin user.
 	 * 
 	 * @param login
 	 * @throws LmsException
