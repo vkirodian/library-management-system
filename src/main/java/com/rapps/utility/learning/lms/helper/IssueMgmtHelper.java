@@ -15,6 +15,7 @@ import com.rapps.utility.learning.lms.global.SessionCache;
 import com.rapps.utility.learning.lms.model.BookModel;
 import com.rapps.utility.learning.lms.model.InventoryModel;
 import com.rapps.utility.learning.lms.model.IssueModel;
+import com.rapps.utility.learning.lms.model.RequestModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
 import com.rapps.utility.learning.lms.persistence.service.BookService;
 import com.rapps.utility.learning.lms.persistence.service.InventoryService;
@@ -49,7 +50,7 @@ public class IssueMgmtHelper extends BaseHelper {
 	 */
 	public void issueBook(String bookId) throws LmsException {
 		BookModel book = validateAndGetBook(bookId);
-		IssueModel dbIssuedBook = issueService.findByBookIdAndUserIdAndStatus(bookId, getUserId(),
+		IssueModel dbIssuedBook = issueService.findIssueByBookIdAndUserIdAndStatus(bookId, getUserId(),
 				IssueStatusEnum.ISSUED);
 		if (dbIssuedBook != null) {
 			LOG.error("Book already issued in users name");
@@ -84,7 +85,7 @@ public class IssueMgmtHelper extends BaseHelper {
 	public void reIssueBook(String bookId) throws LmsException {
 		BookModel book = validateAndGetBook(bookId);
 		InventoryModel inventory = inventoryService.getByBookId(bookId);
-		IssueModel issuedBook = issueService.findByBookIdAndUserIdAndStatus(bookId, getUserId(),
+		IssueModel issuedBook = issueService.findIssueByBookIdAndUserIdAndStatus(bookId, getUserId(),
 				IssueStatusEnum.ISSUED);
 		if (issuedBook == null) {
 			LOG.error("Book currently not issue in users name");
@@ -113,11 +114,16 @@ public class IssueMgmtHelper extends BaseHelper {
 	 */
 	public void requestBook(String bookId) throws LmsException {
 		BookModel book = validateAndGetBook(bookId);
-		IssueModel issuedBook = issueService.findByBookIdAndUserIdAndStatus(bookId, getUserId(),
+		IssueModel issuedBook = issueService.findIssueByBookIdAndUserIdAndStatus(bookId, getUserId(),
 				IssueStatusEnum.ISSUED);
 		if (issuedBook != null) {
 			LOG.error("Book already issued in users name");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.BOOK_ALREADY_ISSUED, book.getTitle());
+		}
+		RequestModel dbRequest = issueService.findRequestByBookIdAndUserId(bookId, getUserId());
+		if (dbRequest != null) {
+			LOG.error("Book already requested in users name");
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.BOOK_ALREADY_REQUESTED, book.getTitle());
 		}
 		InventoryModel inventory = inventoryService.getByBookId(bookId);
 		if (inventory.getTotal() > inventory.getIssued()) {
@@ -127,7 +133,12 @@ public class IssueMgmtHelper extends BaseHelper {
 		}
 		int count = inventory.getRequested() + 1;
 		inventoryService.updateRequestedCount(bookId, count);
-		// TODO add entry to request table
+
+		RequestModel request = new RequestModel();
+		request.setBookId(bookId);
+		request.setUserId(getUserId());
+		request.setRequestDate(System.currentTimeMillis());
+		issueService.saveRequest(request);
 	}
 
 	/**
@@ -139,7 +150,7 @@ public class IssueMgmtHelper extends BaseHelper {
 	 */
 	public void returnBook(String bookId) throws LmsException {
 		BookModel book = validateAndGetBook(bookId);
-		IssueModel issuedBook = issueService.findByBookIdAndUserIdAndStatus(bookId, getUserId(),
+		IssueModel issuedBook = issueService.findIssueByBookIdAndUserIdAndStatus(bookId, getUserId(),
 				IssueStatusEnum.ISSUED);
 		if (issuedBook == null) {
 			LOG.error("Book currently not issue in users name");
@@ -151,13 +162,26 @@ public class IssueMgmtHelper extends BaseHelper {
 			long overDue = currentTime - issuedBook.getReturnDate();
 			int overDueDays = (int) (overDue / (24 * 60 * 60 * 1000));
 			fine = LmsConstants.PER_DAY_FINE * overDueDays;
-			//TODO send fine email
+			// TODO send fine email
 		}
 		issuedBook.setFine(fine);
 		issuedBook.setStatus(IssueStatusEnum.RETURNED);
 		issueService.updateIssue(issuedBook);
-		
-		//TODO Send email to waiting list user.
+
+		RequestModel requestModel = issueService.findOldestRequesterForABook(bookId);
+		if (requestModel != null) {
+			IssueModel issue = new IssueModel();
+			issue.setBookId(requestModel.getBookId());
+			issue.setUserId(requestModel.getUserId());
+			issue.setIssueDate(System.currentTimeMillis());
+			issue.setReturnDate(System.currentTimeMillis() + LmsConstants.BOOK_RETURN_DURATION);
+			issue.setNoOfReissues(0);
+			issue.setFine(0);
+			issue.setStatus(IssueStatusEnum.ISSUED);
+			issueService.saveIssue(issue);
+			issueService.deleteRequestById(requestModel.getRequestId());
+			// TODO Send email to waiting list user.
+		}
 	}
 
 	private BookModel validateAndGetBook(String bookId) throws LmsException {

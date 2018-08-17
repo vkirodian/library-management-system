@@ -63,6 +63,15 @@ create table ISSUE (
     FOREIGN KEY (USERID) REFERENCES USER(USERID)
 );
 
+create table REQUEST (
+	REQUESTID varchar(36) primary key,
+    BOOKID varchar(36) not null,
+    USERID varchar(36) not null,
+    REQUESTDATE bigint not null,
+    FOREIGN KEY (BOOKID) REFERENCES BOOK(BOOKID),
+    FOREIGN KEY (USERID) REFERENCES USER(USERID)
+);
+
 
 INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES (UUID(), '0', '0');
 INSERT INTO `lms`.`access_role` (`ACCESSROLEID`, `ACCESSTYPE`, `ROLE`) VALUES (UUID(), '0', '1');

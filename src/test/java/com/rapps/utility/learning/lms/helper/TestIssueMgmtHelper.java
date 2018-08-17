@@ -17,6 +17,7 @@ import com.rapps.utility.learning.lms.global.SessionCache;
 import com.rapps.utility.learning.lms.model.BookModel;
 import com.rapps.utility.learning.lms.model.InventoryModel;
 import com.rapps.utility.learning.lms.model.IssueModel;
+import com.rapps.utility.learning.lms.model.RequestModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
 import com.rapps.utility.learning.lms.persistence.service.BookService;
 import com.rapps.utility.learning.lms.persistence.service.InventoryService;
@@ -54,7 +55,7 @@ public class TestIssueMgmtHelper {
 	public void testIssueBook_AlreadyIssued() throws LmsException {
 		when(bookService.getBookById("b1")).thenReturn(new BookModel());
 		getSession();
-		when(issueService.findByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED))
+		when(issueService.findIssueByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED))
 				.thenReturn(new IssueModel());
 		helper.issueBook("b1");
 	}
@@ -96,7 +97,7 @@ public class TestIssueMgmtHelper {
 		getSession();
 		IssueModel issue = new IssueModel();
 		issue.setNoOfReissues(LmsConstants.BOOK_REISSUE_THRESHOLD + 1);
-		when(issueService.findByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(issue);
+		when(issueService.findIssueByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(issue);
 		helper.reIssueBook("b1");
 	}
 
@@ -106,7 +107,7 @@ public class TestIssueMgmtHelper {
 		getSession();
 		IssueModel issue = new IssueModel();
 		issue.setNoOfReissues(0);
-		when(issueService.findByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(issue);
+		when(issueService.findIssueByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(issue);
 		InventoryModel i = new InventoryModel();
 		i.setBookId("b1");
 		i.setIssued(5);
@@ -122,7 +123,7 @@ public class TestIssueMgmtHelper {
 		getSession();
 		IssueModel issue = new IssueModel();
 		issue.setNoOfReissues(0);
-		when(issueService.findByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(issue);
+		when(issueService.findIssueByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(issue);
 		InventoryModel i = new InventoryModel();
 		i.setBookId("b1");
 		when(inventoryService.getByBookId("b1")).thenReturn(i);
@@ -133,8 +134,21 @@ public class TestIssueMgmtHelper {
 	public void testRequestBook_AlreadyIssued() throws LmsException {
 		when(bookService.getBookById("b1")).thenReturn(new BookModel());
 		getSession();
-		when(issueService.findByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED))
+		when(issueService.findIssueByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED))
 				.thenReturn(new IssueModel());
+		helper.requestBook("b1");
+	}
+	
+	@Test(expected = LmsException.class)
+	public void testRequestBook_AlreadyRequested() throws LmsException {
+		when(bookService.getBookById("b1")).thenReturn(new BookModel());
+		getSession();
+		InventoryModel i = new InventoryModel();
+		i.setBookId("b1");
+		i.setIssued(3);
+		i.setTotal(5);
+		when(inventoryService.getByBookId("b1")).thenReturn(i);
+		when(issueService.findRequestByBookIdAndUserId("b1", "u1")).thenReturn(new RequestModel());
 		helper.requestBook("b1");
 	}
 
@@ -172,22 +186,27 @@ public class TestIssueMgmtHelper {
 	}
 
 	@Test
-	public void testReturnBook_SuccessWithFine() throws LmsException {
+	public void testReturnBook_SuccessWithFine_AndWithRequest() throws LmsException {
 		when(bookService.getBookById("b1")).thenReturn(new BookModel());
 		getSession();
 		IssueModel issue = new IssueModel();
 		issue.setReturnDate(0);
-		when(issueService.findByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(issue);
+		when(issueService.findIssueByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(issue);
+		RequestModel reqModel = new RequestModel();
+		reqModel.setRequestId("r1");
+		reqModel.setBookId("b1");
+		reqModel.setUserId("u1");
+		when(issueService.findOldestRequesterForABook("b1")).thenReturn(reqModel);
 		helper.returnBook("b1");
 	}
 
 	@Test
-	public void testReturnBook_SuccessWithOutFine() throws LmsException {
+	public void testReturnBook_SuccessWithOutFine_AndWithoutRequest() throws LmsException {
 		when(bookService.getBookById("b1")).thenReturn(new BookModel());
 		getSession();
 		IssueModel issue = new IssueModel();
 		issue.setReturnDate(System.currentTimeMillis() + LmsConstants.BOOK_RETURN_DURATION);
-		when(issueService.findByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(issue);
+		when(issueService.findIssueByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(issue);
 		helper.returnBook("b1");
 	}
 

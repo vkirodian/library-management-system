@@ -23,7 +23,7 @@ import com.rapps.utility.learning.lms.persistence.repository.BaseRepository;
  */
 public class BaseService<T> {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(BaseService.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(BaseService.class);
 
 	@Autowired
 	BaseRepository<T> repository;
