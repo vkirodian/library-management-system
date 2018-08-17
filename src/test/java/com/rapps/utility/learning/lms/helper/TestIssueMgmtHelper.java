@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.rapps.utility.learning.lms.email.EmailUtility;
 import com.rapps.utility.learning.lms.enums.IssueStatusEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.global.LmsConstants;
@@ -18,10 +19,12 @@ import com.rapps.utility.learning.lms.model.BookModel;
 import com.rapps.utility.learning.lms.model.InventoryModel;
 import com.rapps.utility.learning.lms.model.IssueModel;
 import com.rapps.utility.learning.lms.model.RequestModel;
+import com.rapps.utility.learning.lms.model.UserModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
 import com.rapps.utility.learning.lms.persistence.service.BookService;
 import com.rapps.utility.learning.lms.persistence.service.InventoryService;
 import com.rapps.utility.learning.lms.persistence.service.IssueService;
+import com.rapps.utility.learning.lms.persistence.service.UserService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestIssueMgmtHelper {
@@ -37,6 +40,10 @@ public class TestIssueMgmtHelper {
 	IssueService issueService;
 	@Mock
 	HttpServletRequest httpRequest;
+	@Mock
+	EmailUtility emailUtility;
+	@Mock
+	UserService userService;
 
 	@Test(expected = LmsException.class)
 	public void testIssueBook_BookIDNull() throws LmsException {
@@ -197,6 +204,7 @@ public class TestIssueMgmtHelper {
 		reqModel.setBookId("b1");
 		reqModel.setUserId("u1");
 		when(issueService.findOldestRequesterForABook("b1")).thenReturn(reqModel);
+		when(userService.getUserById("u1")).thenReturn(new UserModel());
 		helper.returnBook("b1");
 	}
 

@@ -30,8 +30,8 @@ public class PersistenceServiceProvider {
 
 	private static final String PROPERTY_DRIVER = "driver";
 	private static final String PROPERTY_URL = "url";
-	private static final String PROPERTY_USERNAME = "user";
-	private static final String PROPERTY_PASS = "password";
+	private static final String PROPERTY_USERNAME = "dbuser";
+	private static final String PROPERTY_PASS = "dbpassword";
 	private static final String PROPERTY_SHOW_SQL = "hibernate.show_sql";
 	private static final String PROPERTY_DIALECT = "hibernate.dialect";
 

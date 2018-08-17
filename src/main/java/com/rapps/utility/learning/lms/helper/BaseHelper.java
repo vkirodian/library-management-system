@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.rapps.utility.learning.lms.email.EmailUtility;
 import com.rapps.utility.learning.lms.enums.MessagesEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
@@ -23,6 +24,9 @@ public class BaseHelper {
 
 	@Autowired
 	HttpServletRequest httpRequest;
+
+	@Autowired
+	EmailUtility emailUtility;
 
 	/**
 	 * Returns current users session Id from request header.
@@ -47,5 +51,9 @@ public class BaseHelper {
 	 */
 	protected String getRemoteAddress() {
 		return httpRequest.getRemoteAddr();
+	}
+
+	protected void sendEmail(String to, String subject, String body) throws LmsException {
+		emailUtility.sendEmail(to, subject, body);
 	}
 }

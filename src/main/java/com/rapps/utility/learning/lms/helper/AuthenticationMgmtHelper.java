@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.rapps.utility.learning.lms.enums.MessagesEnum;
+import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
 import com.rapps.utility.learning.lms.global.LmsConstants;
@@ -83,6 +84,18 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 			LOG.error("Login ID is empty");
 			throw new LmsException(ErrorType.FAILURE, MessagesEnum.INPUT_PARAM_EMPTY, "Login ID", "LOGIN");
 		}
+		String sessionId = super.getSessionId();
+		Session session = SessionCache.sessionExists(sessionId);
+		if (session == null) {
+			LOG.error("Session not found");
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.SESSION_NOT_FOUND);
+		}
+		UserModel loggedInUser = userService.getUserById(session.getUserId());
+		if (loggedInUser.getUserRole() != UserRoleEnum.SUPER_ADMIN) {
+			LOG.error("Non Admin user cannot reset password for other users");
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.NON_ADMIN_RESET_PWD, loggedInUser.getLoginId(),
+					resetPassword.getLoginId());
+		}
 		UserModel user = userService.getUserByLoginId(resetPassword.getLoginId());
 		validatePasswordStrength(user.getLoginId(), user.getPassword(), resetPassword.getNewPassword());
 		user.setPassword(resetPassword.getNewPassword());
@@ -105,6 +118,10 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 		}
 		String sessionId = super.getSessionId();
 		Session session = SessionCache.sessionExists(sessionId);
+		if (session == null) {
+			LOG.error("Session not found");
+			throw new LmsException(ErrorType.FAILURE, MessagesEnum.SESSION_NOT_FOUND);
+		}
 		UserModel user = userService.getUserById(session.getUserId());
 		validatePasswordStrength(user.getLoginId(), user.getPassword(), resetPassword.getNewPassword());
 		user.setPassword(resetPassword.getNewPassword());
@@ -123,7 +140,15 @@ public class AuthenticationMgmtHelper extends BaseHelper {
 		try {
 			UserModel user = userService.getUserByLoginId(loginInput.getLoginId());
 			String emailId = user.getEmailId();
-			LOG.debug("Sending email to {}", emailId);// TODO send email
+			LOG.debug("Sending email to {}", emailId);
+			String resetPassword = UUID.randomUUID().toString().substring(24);
+			final String subject = "Your Library Management System password is reset";
+			final String body = "You password is reset and the new password is: " + resetPassword
+					+ "\nPlease login with this password and change your password.";
+			super.sendEmail(emailId, subject, body);
+			user.setPassword(resetPassword);
+			user.setPasswordExpiryTms(0);
+			userService.updateUser(user);
 		} catch (LmsException e) {
 			LOG.error("Error ", e);
 		}

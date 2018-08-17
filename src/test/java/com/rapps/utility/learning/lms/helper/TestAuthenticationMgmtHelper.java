@@ -11,7 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.rapps.utility.learning.lms.email.EmailUtility;
 import com.rapps.utility.learning.lms.enums.MessagesEnum;
+import com.rapps.utility.learning.lms.enums.UserRoleEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
 import com.rapps.utility.learning.lms.global.LmsConstants;
@@ -43,6 +45,8 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 	SessionService sessionService;
 	@Mock
 	HttpServletRequest httpRequest;
+	@Mock
+	EmailUtility emailUtility;
 
 	@Test
 	public void testAuthenticateUser_Success() throws LmsException {
@@ -100,6 +104,12 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
 		ResetPasswordModel reset = getResetPassword();
 		reset.setNewPassword(PSWD);
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(getSession());
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		UserModel lgU = new UserModel();
+		lgU.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		when(userService.getUserById("u1")).thenReturn(lgU);
 		helper.resetPassword(reset);
 	}
 
@@ -111,6 +121,12 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
 		ResetPasswordModel reset = getResetPassword();
 		reset.setNewPassword(null);
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(getSession());
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		UserModel lgU = new UserModel();
+		lgU.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		when(userService.getUserById("u1")).thenReturn(lgU);
 		helper.resetPassword(reset);
 	}
 
@@ -122,6 +138,12 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
 		ResetPasswordModel reset = getResetPassword();
 		reset.setNewPassword("   ");
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(getSession());
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		UserModel lgU = new UserModel();
+		lgU.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		when(userService.getUserById("u1")).thenReturn(lgU);
 		helper.resetPassword(reset);
 	}
 
@@ -133,6 +155,12 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
 		ResetPasswordModel reset = getResetPassword();
 		reset.setNewPassword(LOGIN);
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(getSession());
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		UserModel lgU = new UserModel();
+		lgU.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		when(userService.getUserById("u1")).thenReturn(lgU);
 		helper.resetPassword(reset);
 	}
 
@@ -144,6 +172,12 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
 		ResetPasswordModel reset = getResetPassword();
 		reset.setNewPassword("pass");
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(getSession());
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		UserModel lgU = new UserModel();
+		lgU.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		when(userService.getUserById("u1")).thenReturn(lgU);
 		helper.resetPassword(reset);
 	}
 
@@ -155,6 +189,12 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
 		ResetPasswordModel reset = getResetPassword();
 		reset.setNewPassword("mypasswordisverylongthatitdoesnotfitinthedatabase");
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(getSession());
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		UserModel lgU = new UserModel();
+		lgU.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		when(userService.getUserById("u1")).thenReturn(lgU);
 		helper.resetPassword(reset);
 	}
 
@@ -166,9 +206,15 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
 		ResetPasswordModel reset = getResetPassword();
 		reset.setNewPassword("simplepassword");
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(getSession());
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		UserModel lgU = new UserModel();
+		lgU.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		when(userService.getUserById("u1")).thenReturn(lgU);
 		helper.resetPassword(reset);
 	}
-	
+
 	@Test(expected = LmsException.class)
 	public void testResetPassword_LoginIdEmpty() throws LmsException {
 		UserModel user = new UserModel();
@@ -180,12 +226,47 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		helper.resetPassword(m);
 	}
 
+	@Test(expected = LmsException.class)
+	public void testResetPassword_SessionNotInCache() throws LmsException {
+		UserModel user = new UserModel();
+		user.setLoginId(LOGIN);
+		user.setPassword(PSWD);
+		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
+		SessionCache.removeAllSessions();
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		UserModel lgU = new UserModel();
+		lgU.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		when(userService.getUserById("u1")).thenReturn(lgU);
+		helper.resetPassword(getResetPassword());
+	}
+
+	@Test(expected = LmsException.class)
+	public void testResetPassword_NonAdmin() throws LmsException {
+		UserModel user = new UserModel();
+		user.setLoginId(LOGIN);
+		user.setPassword(PSWD);
+		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
+		SessionCache.removeAllSessions();
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		SessionCache.addSessionToCache(getSession());
+		UserModel lgU = new UserModel();
+		lgU.setUserRole(UserRoleEnum.LIBRARIAN);
+		when(userService.getUserById("u1")).thenReturn(lgU);
+		helper.resetPassword(getResetPassword());
+	}
+
 	@Test
 	public void testResetPassword_Success() throws LmsException {
 		UserModel user = new UserModel();
 		user.setLoginId(LOGIN);
 		user.setPassword(PSWD);
 		when(userService.getUserByLoginId(LOGIN)).thenReturn(user);
+		SessionCache.removeAllSessions();
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		SessionCache.addSessionToCache(getSession());
+		UserModel lgU = new UserModel();
+		lgU.setUserRole(UserRoleEnum.SUPER_ADMIN);
+		when(userService.getUserById("u1")).thenReturn(lgU);
 		helper.resetPassword(getResetPassword());
 	}
 
@@ -201,8 +282,21 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		when(userService.getUserById("u1")).thenReturn(user);
 		ResetPasswordModel reset = getResetPassword();
 		reset.setLoginId(null);
-		reset.setOldPassword(null);
 		reset.setNewPassword(null);
+		helper.updatePassword(reset);
+	}
+
+	@Test(expected = LmsException.class)
+	public void testUpdatePassword_SessionNotInCache() throws LmsException {
+		UserModel user = new UserModel();
+		user.setLoginId(LOGIN);
+		user.setPassword(PSWD);
+		user.setUserId("u1");
+		SessionCache.removeAllSessions();
+		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn(SESSION_ID_1);
+		when(userService.getUserById("u1")).thenReturn(user);
+		ResetPasswordModel reset = getResetPassword();
+		reset.setLoginId(null);
 		helper.updatePassword(reset);
 	}
 
@@ -218,7 +312,6 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 		when(userService.getUserById("u1")).thenReturn(user);
 		ResetPasswordModel reset = getResetPassword();
 		reset.setLoginId(null);
-		reset.setOldPassword(null);
 		helper.updatePassword(reset);
 	}
 
@@ -269,7 +362,6 @@ public class TestAuthenticationMgmtHelper extends TestCase {
 	private ResetPasswordModel getResetPassword() {
 		ResetPasswordModel r = new ResetPasswordModel();
 		r.setLoginId(LOGIN);
-		r.setOldPassword(PSWD);
 		r.setNewPassword(NEWPSWD);
 		return r;
 	}

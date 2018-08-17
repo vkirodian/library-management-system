@@ -1,5 +1,7 @@
 package com.rapps.utility.learning.lms.helper;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,12 @@ import com.rapps.utility.learning.lms.model.BookModel;
 import com.rapps.utility.learning.lms.model.InventoryModel;
 import com.rapps.utility.learning.lms.model.IssueModel;
 import com.rapps.utility.learning.lms.model.RequestModel;
+import com.rapps.utility.learning.lms.model.UserModel;
 import com.rapps.utility.learning.lms.persistence.bean.Session;
 import com.rapps.utility.learning.lms.persistence.service.BookService;
 import com.rapps.utility.learning.lms.persistence.service.InventoryService;
 import com.rapps.utility.learning.lms.persistence.service.IssueService;
+import com.rapps.utility.learning.lms.persistence.service.UserService;
 
 /**
  * Helper class for Issue management.
@@ -40,6 +44,9 @@ public class IssueMgmtHelper extends BaseHelper {
 
 	@Autowired
 	IssueService issueService;
+
+	@Autowired
+	UserService userService;
 
 	/**
 	 * Issue a Book.
@@ -162,7 +169,12 @@ public class IssueMgmtHelper extends BaseHelper {
 			long overDue = currentTime - issuedBook.getReturnDate();
 			int overDueDays = (int) (overDue / (24 * 60 * 60 * 1000));
 			fine = LmsConstants.PER_DAY_FINE * overDueDays;
-			// TODO send fine email
+			UserModel user = userService.getUserById(getUserId());
+			final String to = user.getEmailId();
+			final String subject = "Library Management System: Overdue Book Fine";
+			final String body = "Book Title: " + book.getTitle() + "\nDue Date: " + new Date(issuedBook.getReturnDate())
+					+ "\nOverdue by " + overDueDays + " days\nTotal fine payable: Rs." + fine;
+			super.sendEmail(to, subject, body);
 		}
 		issuedBook.setFine(fine);
 		issuedBook.setStatus(IssueStatusEnum.RETURNED);
@@ -180,7 +192,13 @@ public class IssueMgmtHelper extends BaseHelper {
 			issue.setStatus(IssueStatusEnum.ISSUED);
 			issueService.saveIssue(issue);
 			issueService.deleteRequestById(requestModel.getRequestId());
-			// TODO Send email to waiting list user.
+			UserModel user = userService.getUserById(requestModel.getUserId());
+			final String to = user.getEmailId();
+			final String subject = "Library Management System: Requested Book available";
+			final String body = "Book Title: " + book.getTitle() + "\nRequested Date: "
+					+ new Date(requestModel.getRequestDate()) + "\nIs now available and issue to you on: "
+					+ new Date(issue.getIssueDate()) + "\nPlease collect it from Library.";
+			super.sendEmail(to, subject, body);
 		}
 	}
 
