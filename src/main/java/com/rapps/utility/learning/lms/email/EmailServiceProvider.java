@@ -6,11 +6,16 @@ import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
+/**
+ * Provides configuration for email service.
+ * 
+ * @author vkirodian
+ *
+ */
 @Configuration
 public class EmailServiceProvider {
 
@@ -19,11 +24,17 @@ public class EmailServiceProvider {
 	private static final String SMTP_PORT = "smtpPort";
 	private static final String SMTP_PASS = "smtpPassword";
 
-	@Autowired
-	Environment environment;
-
+	/**
+	 * Returns a instantiated email session bean. SMTP Host, Port, Username,
+	 * Password needs to be provided as part of environment variable.
+	 * 
+	 * @param environment
+	 *            Environment variables from where the SMTP configurations are
+	 *            to be picked up.
+	 * @return Email Session
+	 */
 	@Bean(name = "emailSession")
-	public Session getEmailSession() {
+	public Session getEmailSession(Environment environment) {
 		Properties properties = System.getProperties();
 		properties.put("mail.smtp.auth", "true");
 		properties.put("mail.smtp.starttls.enable", "true");

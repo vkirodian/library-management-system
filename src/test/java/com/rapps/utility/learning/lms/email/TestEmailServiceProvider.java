@@ -30,7 +30,7 @@ public class TestEmailServiceProvider {
 		when(environment.getProperty(SMTP_PORT)).thenReturn("1234");
 		when(environment.getProperty(FROM_ADDRESS)).thenReturn("test@lms.com");
 		when(environment.getProperty(SMTP_PASS)).thenReturn("password");
-		assertNotNull("", provider.getEmailSession());
+		assertNotNull("", provider.getEmailSession(environment));
 	}
 
 }

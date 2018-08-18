@@ -18,6 +18,12 @@ import com.rapps.utility.learning.lms.enums.MessagesEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.exception.LmsException.ErrorType;
 
+/**
+ * Provides a mechanism to send email.
+ * 
+ * @author vkirodian
+ *
+ */
 @Service
 public class EmailUtility {
 
@@ -31,6 +37,18 @@ public class EmailUtility {
 	@Qualifier("emailSession")
 	Session session;
 
+	/**
+	 * Send simple email.
+	 * 
+	 * @param to
+	 *            Recipient
+	 * @param subject
+	 *            Subject
+	 * @param body
+	 *            Body/Content
+	 * @throws LmsException
+	 *             If email sending fails
+	 */
 	public void sendEmail(String to, String subject, String body) throws LmsException {
 		LOG.debug("sending email");
 		try {
