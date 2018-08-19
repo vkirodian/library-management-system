@@ -16,3 +16,10 @@ cache:
     - $HOME/.sonar/cache
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+deploy:
+  provider: releases
+  api_key: ${GIT_TOKEN}
+  file: "library-management-system"
+  skip_cleanup: true
+  on:
+    tags: true
