@@ -2,6 +2,7 @@
 <configuration>
 	<property name="LOG_DIR" value="/file/location/" />
 	<!-- File Logging appender configuration -->
+	<!-- 
 	<appender name="FILE"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${LOG_DIR}/vsmx_connector.log</file>
@@ -11,7 +12,6 @@
 		</encoder>
 
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<!-- rollover daily -->
 			<fileNamePattern>${LOG_DIR}/lms.%d{yyyy-MM-dd}.%i.log
 			</fileNamePattern>
 			<timeBasedFileNamingAndTriggeringPolicy
@@ -20,6 +20,7 @@
 			</timeBasedFileNamingAndTriggeringPolicy>
 		</rollingPolicy>
 	</appender>
+	 -->
 	<!-- Console Logging appender configuration -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
