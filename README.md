@@ -8,7 +8,7 @@ A feature rich Library Management System with following features currently avail
 4. Book Management
 	* Features: Add Book, Delete Book, Update Book, View Book details for a Book ID, View list of Books for a given Filter.
 5. Book Issuing Management
-	* Features: Issue Book, Re-Issue Book, Return Book, Add to waiting list for a Book, Send email with details regarding fine. Send email if book assigned to waiting list.
+	* Features: Issue Book, Re-Issue Book, Return Book, Add to waiting list for a Book, Send email with details regarding fine. Send email if book assigned to waiting list. Send email if book is past due or nearing due.
 
 ## Feature List 
 * [x] View Book
@@ -21,7 +21,7 @@ A feature rich Library Management System with following features currently avail
 * [x] Add to waiting list for a book
 * [x] Send email to waiting user if book is assigned
 * [x] Return Book
-* [ ] Send email if book due near
+* [x] Send email if book due near
 
 * [ ] Issued book list for self/users
 * [ ] Historical record of issued books for self/users

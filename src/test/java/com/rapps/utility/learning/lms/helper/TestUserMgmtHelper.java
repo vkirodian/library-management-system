@@ -289,7 +289,8 @@ public class TestUserMgmtHelper extends TestCase {
 		u.setUserRole(UserRoleEnum.SUPER_ADMIN);
 
 		when(httpRequest.getHeader(LmsConstants.SESSION_ID)).thenReturn("Session_id_1");
-		when(sessionService.getSession("Session_id_1")).thenReturn(s);
+		SessionCache.removeAllSessions();
+		SessionCache.addSessionToCache(s);
 		when(userService.getUserById("u1")).thenReturn(u);
 		helper.deleteUser("u1");
 	}

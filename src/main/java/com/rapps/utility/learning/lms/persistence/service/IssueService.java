@@ -1,5 +1,6 @@
 package com.rapps.utility.learning.lms.persistence.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,20 @@ public class IssueService extends BaseService<Issue> {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Find Issue less than the return date and for a given status,
+	 * 
+	 * @param returnDate
+	 *            Return Date
+	 * @param status
+	 *            Status
+	 * @return List of Issue
+	 */
+	public List<IssueModel> findByReturnDateLessThanAndStatus(long returnDate, IssueStatusEnum status) {
+		return Converter.convertList(issueRepository.findByReturnDateLessThanAndStatus(returnDate, status),
+				IssueModel.class);
 	}
 
 	/**
