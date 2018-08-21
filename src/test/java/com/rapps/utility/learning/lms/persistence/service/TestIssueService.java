@@ -2,8 +2,12 @@ package com.rapps.utility.learning.lms.persistence.service;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.util.CollectionUtils;
 
 import com.rapps.utility.learning.lms.enums.IssueStatusEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
@@ -54,6 +59,14 @@ public class TestIssueService {
 		when(repo.findByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(null);
 		IssueModel model = service.findIssueByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED);
 		assertNull("", model);
+	}
+
+	@Test
+	public void testFindByReturnDateLessThanAndStatus() {
+		when(repo.findByReturnDateLessThanAndStatus(500L, IssueStatusEnum.ISSUED))
+				.thenReturn(Arrays.asList(new Issue()));
+		List<IssueModel> issues = service.findByReturnDateLessThanAndStatus(500L, IssueStatusEnum.ISSUED);
+		assertTrue("", !CollectionUtils.isEmpty(issues));
 	}
 
 	@Test

@@ -1,6 +1,10 @@
 package com.rapps.utility.learning.lms.helper;
 
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -145,7 +149,7 @@ public class TestIssueMgmtHelper {
 				.thenReturn(new IssueModel());
 		helper.requestBook("b1");
 	}
-	
+
 	@Test(expected = LmsException.class)
 	public void testRequestBook_AlreadyRequested() throws LmsException {
 		when(bookService.getBookById("b1")).thenReturn(new BookModel());
@@ -216,6 +220,75 @@ public class TestIssueMgmtHelper {
 		issue.setReturnDate(System.currentTimeMillis() + LmsConstants.BOOK_RETURN_DURATION);
 		when(issueService.findIssueByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(issue);
 		helper.returnBook("b1");
+	}
+
+	@Test
+	public void testSendReminder_Due() throws LmsException {
+		IssueModel issue = new IssueModel();
+		issue.setBookId("b1");
+		issue.setUserId("u1");
+		issue.setIssueId("i1");
+		issue.setStatus(IssueStatusEnum.ISSUED);
+		issue.setReturnDate(System.currentTimeMillis() - 40000000L);
+		issue.setIssueDate(System.currentTimeMillis() - 50000000L);
+
+		BookModel book = new BookModel();
+		book.setTitle("Title");
+
+		UserModel user = new UserModel();
+		user.setEmailId("demo@lms.com");
+
+		when(issueService.findByReturnDateLessThanAndStatus(anyLong(), eq(IssueStatusEnum.ISSUED)))
+				.thenReturn(Arrays.asList(issue));
+		when(bookService.getBookById("b1")).thenReturn(book);
+		when(userService.getUserById("u1")).thenReturn(user);
+		helper.sendReminder();
+	}
+
+	@Test
+	public void testSendReminder_NearDue() throws LmsException {
+		IssueModel issue = new IssueModel();
+		issue.setBookId("b1");
+		issue.setUserId("u1");
+		issue.setIssueId("i1");
+		issue.setStatus(IssueStatusEnum.ISSUED);
+		issue.setReturnDate(System.currentTimeMillis() + 3000L);
+		issue.setIssueDate(System.currentTimeMillis() - 50000000L);
+
+		BookModel book = new BookModel();
+		book.setTitle("Title");
+
+		UserModel user = new UserModel();
+		user.setEmailId("demo@lms.com");
+
+		when(issueService.findByReturnDateLessThanAndStatus(anyLong(), eq(IssueStatusEnum.ISSUED)))
+				.thenReturn(Arrays.asList(issue));
+		when(bookService.getBookById("b1")).thenReturn(book);
+		when(userService.getUserById("u1")).thenReturn(user);
+		helper.sendReminder();
+	}
+
+	@Test
+	public void testSendReminder_Exception() throws LmsException {
+		IssueModel issue = new IssueModel();
+		issue.setBookId("b1");
+		issue.setUserId("u1");
+		issue.setIssueId("i1");
+		issue.setStatus(IssueStatusEnum.ISSUED);
+		issue.setReturnDate(System.currentTimeMillis() + 3000L);
+		issue.setIssueDate(System.currentTimeMillis() - 50000000L);
+
+		BookModel book = new BookModel();
+		book.setTitle("Title");
+
+		UserModel user = new UserModel();
+		user.setEmailId("demo@lms.com");
+
+		when(issueService.findByReturnDateLessThanAndStatus(anyLong(), eq(IssueStatusEnum.ISSUED)))
+				.thenReturn(Arrays.asList(issue));
+		when(bookService.getBookById("b1")).thenReturn(book);
+		when(userService.getUserById("u1")).thenThrow(new LmsException());
+		helper.sendReminder();
 	}
 
 	private void getSession() {

@@ -1,10 +1,12 @@
 package com.rapps.utility.learning.lms.helper;
 
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -199,6 +201,40 @@ public class IssueMgmtHelper extends BaseHelper {
 					+ new Date(requestModel.getRequestDate()) + "\nIs now available and issue to you on: "
 					+ new Date(issue.getIssueDate()) + "\nPlease collect it from Library.";
 			super.sendEmail(to, subject, body);
+		}
+	}
+
+	/**
+	 * Send out reminder email to all users at midnight every day. For users
+	 * having books past due date and for users whose books are nearing due
+	 * date.
+	 */
+	@Scheduled(cron = "${emailReminderFrequency}")
+	public void sendReminder() {
+		LOG.error("Sendinf MEAIL");
+		// find books for which the return date is less than the reminder date,
+		// (e.g. less than 3 days from today)
+		long dueTime = System.currentTimeMillis() + LmsConstants.BOOK_DUE_REMINDERS;
+		List<IssueModel> issues = issueService.findByReturnDateLessThanAndStatus(dueTime, IssueStatusEnum.ISSUED);
+		for (IssueModel issue : issues) {
+			try {
+				String dueText;
+				if (issue.getReturnDate() > System.currentTimeMillis()) {
+					dueText = "about to due";
+				} else {
+					dueText = "overdue";
+				}
+				BookModel book = validateAndGetBook(issue.getBookId());
+				UserModel user = userService.getUserById(issue.getUserId());
+				final String to = user.getEmailId();
+				final String subject = "Library Management System: Issued Book is " + dueText;
+				final String body = "Book Title: " + book.getTitle() + "\nIssued Date: "
+						+ new Date(issue.getIssueDate()) + "\nIs " + dueText + " and Return Date: "
+						+ new Date(issue.getReturnDate()) + "\nPlease take appropriate action.";
+				super.sendEmail(to, subject, body);
+			} catch (LmsException e) {
+				LOG.error("Error while sending due reminder", e);
+			}
 		}
 	}
 
