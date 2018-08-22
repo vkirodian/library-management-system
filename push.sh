@@ -10,7 +10,7 @@ setup_git() {
 commit_website_files() {
   echo "Checkout and Commit Start"
   git checkout -b dev
-  git commit -am "Travis build"
+  git commit -am "Travis Build"
   echo "Checkout and Commit End"
 }
 
