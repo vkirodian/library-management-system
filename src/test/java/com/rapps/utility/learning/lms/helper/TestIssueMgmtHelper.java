@@ -202,6 +202,9 @@ public class TestIssueMgmtHelper {
 		getSession();
 		IssueModel issue = new IssueModel();
 		issue.setReturnDate(0);
+		InventoryModel inventory = new InventoryModel();
+		inventory.setRequested(1);
+		inventory.setIssued(1);
 		when(issueService.findIssueByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(issue);
 		RequestModel reqModel = new RequestModel();
 		reqModel.setRequestId("r1");
@@ -209,6 +212,7 @@ public class TestIssueMgmtHelper {
 		reqModel.setUserId("u1");
 		when(issueService.findOldestRequesterForABook("b1")).thenReturn(reqModel);
 		when(userService.getUserById("u1")).thenReturn(new UserModel());
+		when(inventoryService.getByBookId("b1")).thenReturn(inventory);
 		helper.returnBook("b1");
 	}
 
@@ -217,8 +221,12 @@ public class TestIssueMgmtHelper {
 		when(bookService.getBookById("b1")).thenReturn(new BookModel());
 		getSession();
 		IssueModel issue = new IssueModel();
+		InventoryModel inventory = new InventoryModel();
+		inventory.setRequested(1);
+		inventory.setIssued(1);
 		issue.setReturnDate(System.currentTimeMillis() + LmsConstants.BOOK_RETURN_DURATION);
 		when(issueService.findIssueByBookIdAndUserIdAndStatus("b1", "u1", IssueStatusEnum.ISSUED)).thenReturn(issue);
+		when(inventoryService.getByBookId("b1")).thenReturn(inventory);
 		helper.returnBook("b1");
 	}
 

@@ -1,5 +1,7 @@
 package com.rapps.utility.learning.lms.persistence.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,17 @@ public class SessionService extends BaseService<Session> {
 
 	@Autowired
 	SessionRepository sessionRepository;
+
+	/**
+	 * Get List of session with last access time less than the passed time.
+	 * 
+	 * @param lastAccessTime
+	 *            Access time
+	 * @return List of Session
+	 */
+	public List<Session> findByLastAccessTimeLessThan(long lastAccessTime) {
+		return sessionRepository.findByLastAccessTimeLessThan(lastAccessTime);
+	}
 
 	/**
 	 * Get session details for given session id.
