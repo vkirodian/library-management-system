@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rapps.utility.learning.lms.controller.IIssueMgmt;
 import com.rapps.utility.learning.lms.exception.LmsException;
 import com.rapps.utility.learning.lms.helper.IssueMgmtHelper;
+import com.rapps.utility.learning.lms.model.IssueModel;
+import com.rapps.utility.learning.lms.model.RequestModel;
 
 /**
  * Implementing class for API related to Issuing Mgmt.
@@ -21,23 +23,23 @@ public class IssueMgmt implements IIssueMgmt {
 	IssueMgmtHelper helper;
 
 	@Override
-	public void issueBook(@PathVariable("bookId") String bookId) throws LmsException {
-		helper.issueBook(bookId);
+	public IssueModel issueBook(@PathVariable("bookId") String bookId) throws LmsException {
+		return helper.issueBook(bookId);
 	}
 
 	@Override
-	public void reIssueBook(@PathVariable("bookId") String bookId) throws LmsException {
-		helper.reIssueBook(bookId);
+	public IssueModel reIssueBook(@PathVariable("bookId") String bookId) throws LmsException {
+		return helper.reIssueBook(bookId);
 	}
 
 	@Override
-	public void requestBook(@PathVariable("bookId") String bookId) throws LmsException {
-		helper.requestBook(bookId);
+	public RequestModel requestBook(@PathVariable("bookId") String bookId) throws LmsException {
+		return helper.requestBook(bookId);
 	}
 
 	@Override
-	public void returnBook(@PathVariable("bookId") String bookId) throws LmsException {
-		helper.returnBook(bookId);
+	public IssueModel returnBook(@PathVariable("bookId") String bookId) throws LmsException {
+		return helper.returnBook(bookId);
 	}
 
 }

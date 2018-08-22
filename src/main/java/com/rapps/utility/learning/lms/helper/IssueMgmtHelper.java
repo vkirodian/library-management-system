@@ -55,9 +55,10 @@ public class IssueMgmtHelper extends BaseHelper {
 	 * 
 	 * @param bookId
 	 *            Book ID
+	 * @return
 	 * @throws LmsException
 	 */
-	public void issueBook(String bookId) throws LmsException {
+	public IssueModel issueBook(String bookId) throws LmsException {
 		BookModel book = validateAndGetBook(bookId);
 		IssueModel dbIssuedBook = issueService.findIssueByBookIdAndUserIdAndStatus(bookId, getUserId(),
 				IssueStatusEnum.ISSUED);
@@ -75,6 +76,7 @@ public class IssueMgmtHelper extends BaseHelper {
 
 		IssueModel issue = new IssueModel();
 		issue.setBookId(book.getBookId());
+		issue.setTitle(book.getTitle());
 		issue.setUserId(getUserId());
 		issue.setIssueDate(System.currentTimeMillis());
 		issue.setReturnDate(System.currentTimeMillis() + LmsConstants.BOOK_RETURN_DURATION);
@@ -82,6 +84,7 @@ public class IssueMgmtHelper extends BaseHelper {
 		issue.setFine(0);
 		issue.setStatus(IssueStatusEnum.ISSUED);
 		issueService.saveIssue(issue);
+		return issue;
 	}
 
 	/**
@@ -89,9 +92,10 @@ public class IssueMgmtHelper extends BaseHelper {
 	 * 
 	 * @param bookId
 	 *            Book ID
+	 * @return
 	 * @throws LmsException
 	 */
-	public void reIssueBook(String bookId) throws LmsException {
+	public IssueModel reIssueBook(String bookId) throws LmsException {
 		BookModel book = validateAndGetBook(bookId);
 		InventoryModel inventory = inventoryService.getByBookId(bookId);
 		IssueModel issuedBook = issueService.findIssueByBookIdAndUserIdAndStatus(bookId, getUserId(),
@@ -111,7 +115,9 @@ public class IssueMgmtHelper extends BaseHelper {
 		}
 		issuedBook.setNoOfReissues(issuedBook.getNoOfReissues() + 1);
 		issuedBook.setReturnDate(System.currentTimeMillis() + LmsConstants.BOOK_RETURN_DURATION);
+		issuedBook.setTitle(book.getTitle());
 		issueService.updateIssue(issuedBook);
+		return issuedBook;
 	}
 
 	/**
@@ -119,9 +125,10 @@ public class IssueMgmtHelper extends BaseHelper {
 	 * 
 	 * @param bookId
 	 *            Book ID
+	 * @return 
 	 * @throws LmsException
 	 */
-	public void requestBook(String bookId) throws LmsException {
+	public RequestModel requestBook(String bookId) throws LmsException {
 		BookModel book = validateAndGetBook(bookId);
 		IssueModel issuedBook = issueService.findIssueByBookIdAndUserIdAndStatus(bookId, getUserId(),
 				IssueStatusEnum.ISSUED);
@@ -145,9 +152,11 @@ public class IssueMgmtHelper extends BaseHelper {
 
 		RequestModel request = new RequestModel();
 		request.setBookId(bookId);
+		request.setTitle(book.getTitle());
 		request.setUserId(getUserId());
 		request.setRequestDate(System.currentTimeMillis());
 		issueService.saveRequest(request);
+		return request;
 	}
 
 	/**
@@ -155,9 +164,10 @@ public class IssueMgmtHelper extends BaseHelper {
 	 * 
 	 * @param bookId
 	 *            Book ID
+	 * @return
 	 * @throws LmsException
 	 */
-	public void returnBook(String bookId) throws LmsException {
+	public IssueModel returnBook(String bookId) throws LmsException {
 		BookModel book = validateAndGetBook(bookId);
 		IssueModel issuedBook = issueService.findIssueByBookIdAndUserIdAndStatus(bookId, getUserId(),
 				IssueStatusEnum.ISSUED);
@@ -178,9 +188,13 @@ public class IssueMgmtHelper extends BaseHelper {
 					+ "\nOverdue by " + overDueDays + " days\nTotal fine payable: Rs." + fine;
 			super.sendEmail(to, subject, body);
 		}
+		issuedBook.setTitle(book.getTitle());
 		issuedBook.setFine(fine);
 		issuedBook.setStatus(IssueStatusEnum.RETURNED);
 		issueService.updateIssue(issuedBook);
+
+		boolean decreaseIssuedCount = true;
+		InventoryModel inventory = inventoryService.getByBookId(bookId);
 
 		RequestModel requestModel = issueService.findOldestRequesterForABook(bookId);
 		if (requestModel != null) {
@@ -194,6 +208,9 @@ public class IssueMgmtHelper extends BaseHelper {
 			issue.setStatus(IssueStatusEnum.ISSUED);
 			issueService.saveIssue(issue);
 			issueService.deleteRequestById(requestModel.getRequestId());
+			int requested = inventory.getRequested() - 1;
+			inventoryService.updateRequestedCount(bookId, requested);
+			decreaseIssuedCount = false;
 			UserModel user = userService.getUserById(requestModel.getUserId());
 			final String to = user.getEmailId();
 			final String subject = "Library Management System: Requested Book available";
@@ -202,6 +219,11 @@ public class IssueMgmtHelper extends BaseHelper {
 					+ new Date(issue.getIssueDate()) + "\nPlease collect it from Library.";
 			super.sendEmail(to, subject, body);
 		}
+		if (decreaseIssuedCount) {
+			int issued = inventory.getIssued() - 1;
+			inventoryService.updateIssuedCount(bookId, issued);
+		}
+		return issuedBook;
 	}
 
 	/**
@@ -211,7 +233,6 @@ public class IssueMgmtHelper extends BaseHelper {
 	 */
 	@Scheduled(cron = "${emailReminderFrequency}")
 	public void sendReminder() {
-		LOG.error("Sendinf MEAIL");
 		// find books for which the return date is less than the reminder date,
 		// (e.g. less than 3 days from today)
 		long dueTime = System.currentTimeMillis() + LmsConstants.BOOK_DUE_REMINDERS;

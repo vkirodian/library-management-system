@@ -12,6 +12,7 @@ public class IssueModel {
 
 	private String issueId;
 	private String bookId;
+	private String title;
 	private String userId;
 	private long issueDate;
 	private long returnDate;
@@ -33,6 +34,14 @@ public class IssueModel {
 
 	public void setBookId(String bookId) {
 		this.bookId = bookId;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getUserId() {
