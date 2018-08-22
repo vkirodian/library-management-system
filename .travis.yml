@@ -9,7 +9,7 @@ script:
   - ./gradlew sonarqube -Dsonar.organization=vkirodian-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SONAR_KEY}
   
 after_success:
-  - .travis/push.sh
+  - .push.sh
   
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
