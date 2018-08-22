@@ -125,7 +125,7 @@ public class IssueMgmtHelper extends BaseHelper {
 	 * 
 	 * @param bookId
 	 *            Book ID
-	 * @return 
+	 * @return
 	 * @throws LmsException
 	 */
 	public RequestModel requestBook(String bookId) throws LmsException {
@@ -227,9 +227,9 @@ public class IssueMgmtHelper extends BaseHelper {
 	}
 
 	/**
-	 * Send out reminder email to all users at midnight every day. For users
-	 * having books past due date and for users whose books are nearing due
-	 * date.
+	 * Send out reminder email to all users at scheduled time as per the cron
+	 * parameter {@code emailReminderFrequency}. For users having books past due
+	 * date and for users whose books are nearing due date.
 	 */
 	@Scheduled(cron = "${emailReminderFrequency}")
 	public void sendReminder() {

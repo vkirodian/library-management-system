@@ -1,6 +1,12 @@
 package com.rapps.utility.learning.lms.helper;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,4 +64,20 @@ public class TestSessionMgmtHelper extends TestCase {
 		helper.cleanSessionOnStartup();
 	}
 
+	@Test
+	public void testClearStaleSessions_Exception() throws LmsException {
+		Session session = new Session();
+		List<Session> sessions = Arrays.asList(session);
+		when(sessionService.findByLastAccessTimeLessThan(anyLong())).thenReturn(sessions);
+		doThrow(new LmsException()).when(sessionService).deleteById(any());
+		helper.clearStaleSessions();
+	}
+	
+	@Test
+	public void testClearStaleSessions_Success() throws LmsException {
+		Session session = new Session();
+		List<Session> sessions = Arrays.asList(session);
+		when(sessionService.findByLastAccessTimeLessThan(anyLong())).thenReturn(sessions);
+		helper.clearStaleSessions();
+	}
 }
