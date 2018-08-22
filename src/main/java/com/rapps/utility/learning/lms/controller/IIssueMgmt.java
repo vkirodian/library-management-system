@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.rapps.utility.learning.lms.annotation.Authorization;
 import com.rapps.utility.learning.lms.enums.AccessTypeEnum;
 import com.rapps.utility.learning.lms.exception.LmsException;
+import com.rapps.utility.learning.lms.model.IssueModel;
+import com.rapps.utility.learning.lms.model.RequestModel;
 
 /**
  * Interface providing API' related to issuing management.
@@ -21,12 +23,13 @@ public interface IIssueMgmt {
 	 * 
 	 * @param bookId
 	 *            Book ID
+	 * @return 
 	 * @throws LmsException
 	 *             If book not found.
 	 */
 	@GetMapping(value = "issue/{bookId}")
 	@Authorization(accessType = AccessTypeEnum.ISSUE_USERS)
-	void issueBook(String bookId) throws LmsException;
+	IssueModel issueBook(String bookId) throws LmsException;
 
 	/**
 	 * Re-Issue a Book.
@@ -38,19 +41,20 @@ public interface IIssueMgmt {
 	 */
 	@GetMapping(value = "reissue/{bookId}")
 	@Authorization(accessType = AccessTypeEnum.ISSUE_USERS)
-	void reIssueBook(String bookId) throws LmsException;
+	IssueModel reIssueBook(String bookId) throws LmsException;
 
 	/**
 	 * Add self to waiting list for a Book.
 	 * 
 	 * @param bookId
 	 *            Book ID
+	 * @return 
 	 * @throws LmsException
 	 *             If book not found.
 	 */
 	@GetMapping(value = "waiting/{bookId}")
 	@Authorization(accessType = AccessTypeEnum.ISSUE_USERS)
-	void requestBook(String bookId) throws LmsException;
+	RequestModel requestBook(String bookId) throws LmsException;
 
 	/**
 	 * Return a Book.
@@ -62,5 +66,5 @@ public interface IIssueMgmt {
 	 */
 	@GetMapping(value = "return/{bookId}")
 	@Authorization(accessType = AccessTypeEnum.ISSUE_USERS)
-	void returnBook(String bookId) throws LmsException;
+	IssueModel returnBook(String bookId) throws LmsException;
 }

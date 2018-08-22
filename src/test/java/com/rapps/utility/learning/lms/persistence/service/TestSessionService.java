@@ -24,6 +24,11 @@ public class TestSessionService extends TestCase {
 
 	@Mock
 	SessionRepository sessionRepository;
+	
+	@Test
+	public void testFindByLastAccessTimeLessThan() {
+		service.findByLastAccessTimeLessThan(0L);
+	}
 
 	@Test(expected = LmsException.class)
 	public void testGetSession_Exception() throws LmsException {

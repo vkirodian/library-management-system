@@ -10,6 +10,7 @@ public class RequestModel {
 
 	private String requestId;
 	private String bookId;
+	private String title;
 	private String userId;
 	private long requestDate;
 
@@ -27,6 +28,14 @@ public class RequestModel {
 
 	public void setBookId(String bookId) {
 		this.bookId = bookId;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getUserId() {
