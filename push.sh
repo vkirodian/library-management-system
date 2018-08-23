@@ -10,7 +10,7 @@ setup_git() {
 
 commit_files() {
   echo "Commit Start"
-#  git checkout -b dev
+  git checkout $TRAVIS_PULL_REQUEST_BRANCH
   git commit -am "Travis build $TRAVIS_BUILD_NUMBER"
   echo "Commit End"
 }
