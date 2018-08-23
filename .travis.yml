@@ -11,7 +11,7 @@ script:
   - ./gradlew build
   
 after_success:
-  - ./push.sh
+  - ./push.sh $TRAVIS_PULL_REQUEST_BRANCH
   
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
