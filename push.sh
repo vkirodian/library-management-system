@@ -20,7 +20,9 @@ upload_files() {
 #  git remote add inventory_issue https://${GIT_TOKEN}@github.com/vkirodian/library-management-system.git > /dev/null 2>&1
 #  git push --quiet --set-upstream inventory_issue dev 
   branch_name=`git rev-parse --abbrev-ref HEAD`
-  git push origin $branch_name
+  echo $branch_name
+  echo FETCH_HEAD
+  git push origin FETCH_HEAD
   echo "Push End"
 }
 
