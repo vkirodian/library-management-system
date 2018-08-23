@@ -4,7 +4,8 @@ setup_git() {
   echo "Configuration Start"
   git config --global user.email ${EMAIL}
   git config --global user.name ${USERNAME}
-  git remote set-url origin https://${GIT_TOKEN}@github.com/vkirodian/library-management-system.git
+  echo $TRAVIS_PULL_REQUEST_BRANCH
+#  git remote set-url origin https://${GIT_TOKEN}@github.com/vkirodian/library-management-system.git
   echo "Configuration End"
 }
 
@@ -17,10 +18,8 @@ commit_files() {
 
 upload_files() {
   echo "Push Start"
-#  git remote add inventory_issue https://${GIT_TOKEN}@github.com/vkirodian/library-management-system.git > /dev/null 2>&1
-#  git push --quiet --set-upstream inventory_issue dev 
-  echo $TRAVIS_PULL_REQUEST_BRANCH
-  git push origin $TRAVIS_PULL_REQUEST_BRANCH
+  git remote add develop https://${GIT_TOKEN}@github.com/vkirodian/library-management-system.git > /dev/null 2>&1
+  git push --quiet --set-upstream develop  $TRAVIS_PULL_REQUEST_BRANCH 
   echo "Push End"
 }
 
