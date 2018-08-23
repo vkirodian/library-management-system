@@ -21,7 +21,7 @@ upload_files() {
 #  git push --quiet --set-upstream inventory_issue dev 
   branch_name=`git rev-parse --abbrev-ref HEAD`
   echo $branch_name
-  echo FETCH_HEAD
+  echo $FETCH_HEAD
   git push origin FETCH_HEAD
   echo "Push End"
 }
